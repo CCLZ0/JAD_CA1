@@ -39,8 +39,8 @@ body {
 }
 
 .toggle-bar .active {
-    border-color: #FF9500; /* Highlight color */
-    color: #FF9500;
+    border-color: #00457C; /* Highlight color */
+    color: #00457C;
 }
 
 .form {

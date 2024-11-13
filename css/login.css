@@ -1,0 +1,87 @@
+@charset "UTF-8";
+body {
+    font-family: "Recursive", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    width: 400px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-bar {
+    display: flex;
+    justify-content: space-around;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.toggle-bar div {
+    padding: 10px;
+    width: 50%;
+    text-align: center;
+    border-bottom: 2px solid transparent;
+}
+
+.toggle-bar .active {
+    border-color: #00457C; /* Highlight color */
+    color: #00457C;
+}
+
+.form {
+    display: none;
+    margin-top: 20px;
+}
+
+.form.active {
+    display: block;
+}
+
+.form input, .form button {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.submitBtn{
+	background-color: #00A3E0;
+	color: #F8F8F8;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	font-size: em;
+	cursor: pointer;
+	font-weight: bold;
+	transition: background-color 0.3s ease;
+}
+
+.submitBtn:hover{
+	background-color: #00457C;
+}
+
+#errorBox, #successBox {
+    padding: 1em;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin: 1em 0;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#errorBox {
+    border: 2px solid red;
+    color: #cc0000;
+}
+
+#successBox {
+    border: 2px solid green;
+    color: green;
+}
