@@ -1,11 +1,91 @@
 @charset "UTF-8";
 html{
 	scroll-behavior: smooth;
-	background-color: #F8F8F8;
 }
 
 body{
+	font-family: "Recursive", sans-serif;
 	padding: 0;
 	margin: 0;
+	background-color: #F8F8F8;
+}
+/* Banner styles */
+.banner {
+    display: flex;
+    justify-content: flex-start; /* Align content to the left */
+    align-items: center;
+    max-width: 100%;
+    max-height: 100vh;
+    overflow: hidden;
+    position: relative; /* Enable absolute positioning for overlay elements */
 }
 
+#bannerImg img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.overlay {
+    position: absolute;
+    left: 20px; /* Adjust as needed to position within the left margin */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Fine-tune vertical centering */
+    color: white;
+    padding: 10px;
+    margin-left: 10%;
+}
+
+#overlayText {
+	z-index: 1;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #464646;
+}
+
+.searchBar {
+    display: inline-flex;
+    align-items: left;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.searchBar input[type="text"] {
+    padding: 15px;
+    font-size: 1rem;
+    border: none;
+    outline: none;
+    width: 300px; /* Adjust width as needed */
+}
+
+.book-now-btn {
+    background-color: #00A3E0;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.book-now-btn:hover {
+    background-color: #00457C;
+}
+/* Banner styles */
+
+/* Divider styles */
+.divider {
+    background-color: #00457C;
+    color: #F8F8F8; 
+    padding: 2px 0;
+    text-align: center; 
+    font-size: 20px;
+    font-weight: bold;
+    width: 100%;
+}
+
+/* Divider styles */
