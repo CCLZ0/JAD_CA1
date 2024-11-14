@@ -1,17 +1,28 @@
 @charset "UTF-8";
 body {
     font-family: "Recursive", sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    background-color: #F8F8F8;
+    background-image: url(../img/loginBG.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
     margin: 0;
 }
 
+.form-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 110px); 
+    box-sizing: border-box;
+}
+
 .container {
-    width: 400px;
+    width: 450px;
     padding: 20px;
-    border: 1px solid #ddd;
+    background-color:#F8F8F8;
+    border: 1px solid #F8F8F8;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -60,6 +71,7 @@ body {
 	font-size: em;
 	cursor: pointer;
 	font-weight: bold;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	transition: background-color 0.3s ease;
 }
 
