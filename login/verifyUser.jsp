@@ -1,38 +1,47 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="org.mindrot.jbcrypt.BCrypt" %>
 <%@ page import="java.sql.*" %>
 
 <%
-    // Get name and password from the form
-    String name = request.getParameter("name");
+    // Get email and password from the form
+    String email = request.getParameter("email");
     String password = request.getParameter("password");
 
-    if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
-        // Redirect with error code if name or password is empty
+    if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+        // Redirect with error code if email or password is empty
         response.sendRedirect("login.jsp?error=101");
     } else {
         try {
-        	// Load JDBC Driver
+            // Load JDBC Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Define connection URL
-            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
+            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
 
             // Establish connection to URL
             Connection conn = DriverManager.getConnection(connURL);
 
-            // Query to verify user
-            String query = "SELECT * FROM member WHERE name = ? AND password = ?";
+            // Query to retrieve the user based on email
+            String query = "SELECT * FROM user WHERE email = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, name);
-            pstmt.setString(2, password);
+            pstmt.setString(1, email);
 
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                // User found, proceed with login
-                response.sendRedirect("../user/index.jsp");
+                // User found, retrieve stored hashed password
+                String storedHashedPassword = rs.getString("password");
+
+                // Compare the entered password with the stored hashed password using BCrypt
+                if (BCrypt.checkpw(password, storedHashedPassword)) {
+                    // Password matches, proceed with login
+                    response.sendRedirect("../user/index.jsp");
+                } else {
+                    // Invalid password
+                    response.sendRedirect("login.jsp?error=invalidLogin");
+                }
             } else {
-                // Invalid login
+                // User not found
                 response.sendRedirect("login.jsp?error=invalidLogin");
             }
 
@@ -47,3 +56,4 @@
         }
     }
 %>
+
