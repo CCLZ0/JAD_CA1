@@ -13,7 +13,7 @@ body {
 }
 
 img {
-  pointer-events: none;
+	pointer-events: none;
 }
 /* Banner styles */
 .banner {
@@ -57,7 +57,8 @@ img {
 	border: 1px solid #e0e0e0;
 	border-radius: 5px;
 	overflow: hidden;
-	background-color: #fff;
+	background-color: #F8F8F8;
+	position: relative;
 }
 
 .searchBar input[type="text"] {
@@ -65,7 +66,29 @@ img {
 	font-size: 1rem;
 	border: none;
 	outline: none;
-	width: 300px; /* Adjust width as needed */
+	width: 300px;
+}
+
+.suggestions-list {
+	position: absolute; /* Makes the box appear below the search */
+	width:72%;
+    position: fixed;
+    top: 93%;
+	max-height: 150px;
+    background: white;
+    overflow: auto;
+    transition:.2s ease-out;
+	z-index: 100; /* Ensures it is above other elements */
+}
+
+.suggestion-item {
+	padding: 8px;
+	color: #464646;
+	cursor: pointer;
+}
+
+.suggestion-item:hover {
+	background-color: #f0f0f0;
 }
 
 .book-now-btn {
@@ -101,17 +124,17 @@ img {
 }
 
 .row.section {
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 0;
+	padding-right: 0;
 }
 
-.img1{
+.img1 {
 	padding: 0;
 }
 
-.img2{
+.img2 {
 	padding: 0;
 }
 
@@ -137,12 +160,11 @@ img {
 	transition: background-color 0.3s ease;
 }
 
-.btn-custom:hover{
+.btn-custom:hover {
 	background-color: #00457C;
 }
 
 .pl-md-custom {
-	padding-left: 1.5rem; 
+	padding-left: 1.5rem;
 	padding-right: 0;
 }
-

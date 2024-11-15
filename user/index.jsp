@@ -18,9 +18,11 @@
         <div class="overlay d-flex flex-column justify-content-center align-items-center">
             <h1 class="display-4 fw-bold text-shadow" id="overlayText">We leave your house sparkling clean!</h1>
             <div class="searchBar d-flex mt-3">
-                <input type="text" class="form-control me-2" placeholder="Search">
+                <input type="text" class="form-control me-2" placeholder="Search" id="serviceSearch">
                 <button class="btn btn-primary book-now-btn">Book Now</button>
+                <div id="suggestions" class="suggestions-list d-none"></div>
             </div>
+            
         </div>
     </div>
 
@@ -52,6 +54,6 @@
 	</div>
 
 	<%@ include file="../web_elements/footer.html"%>
+	<script src="../js/search.js"></script>
 </body>
-<script src="../js/app.js"></script>
 </html>
