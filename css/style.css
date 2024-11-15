@@ -9,6 +9,11 @@ body {
 	padding: 0;
 	margin: 0;
 	background-color: #F8F8F8;
+	overflow-x: hidden;
+}
+
+img {
+  pointer-events: none;
 }
 /* Banner styles */
 .banner {
@@ -95,7 +100,18 @@ body {
 	padding: 0;
 }
 
+.row.section {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .img1{
+	padding: 0;
+}
+
+.img2{
 	padding: 0;
 }
 

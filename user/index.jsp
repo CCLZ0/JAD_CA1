@@ -34,23 +34,24 @@
 			<img src="../img/cleaning.jpeg" alt="Image 1" class="img-fluid rounded">
 		</div>
 		<div class="col-md-6 content">
-			<h2>Meet Clean Lab</h2>
-			<p>One of the most trusted names in the business today, Clean Lab provides a range of comprehensive professional cleaning services anddisinfection treatment to a wide range of industries.</p>
+			<h2>Welcome to Shine Pro!</h2>
+			<p>One of the rising and trusted names in the industry today,<br>Shine Pro provides a range of detailed professional cleaning services<br>and disinfection treatment to a wide range of customers.</p>
 			<a href="services.jsp"><button class="btn-custom">View Services</button></a>		
 		</div>
 	</div>
 
 	<!-- Section 2 -->
 	<div class="row section align-items-center">
-		<div class="col-md-6 order-md-2">
+		<div class="col-md-6 order-md-2 img2">
 			<img src="../img/cleaning2.jpg" alt="Image 2" class="img-fluid rounded">
 		</div>
 		<div class="col-md-6 order-md-1 content pl-md-custom">
 			<h2>Highest Standard of Service</h2>
-			<p>We provide the highest standard of disinfection and cleaning services in Singapore, designed to protect what matters to you using environmentally friendly cleaning products.</p>
+			<p>We provide the highest standard of disinfection and cleaning services in Singapore,<br>designed to protect what matters to you using environmentally friendly cleaning products.</p>
 		</div>
 	</div>
 
 	<%@ include file="../web_elements/footer.html"%>
 </body>
+<script src="../js/app.js"></script>
 </html>
