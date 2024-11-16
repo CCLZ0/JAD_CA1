@@ -1,8 +1,0 @@
-id,email,name,password,role
-1,111@gmail.com,u111,p111,admin
-2,1112@gmail.com,u112,p112,admin
-3,113@gmail.com,u113,p113,member
-4,114@gmail.com,u114,p114,member
-5,115@gmail.com,u115,p115,member
-6,test@gmail.com,test,1234,member
-7,test2@hotmail.com,test2,1234,member
