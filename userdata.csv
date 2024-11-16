@@ -1,0 +1,6 @@
+id,email,name,password,role
+1,K@gmail.com,K,$2a$10$j5Ei75J13da18coWP1PENeA1AZkTvPD2boeH0rnmLt7xU7qmA3e3q,admin
+2,CCLZ@gmail.com,CCLZ,$2a$10$4rNeRhqW/5YTYX0SEMNnVejNXZpOQFf/FJrZqYNqBzSHOqRkq8ZBC,admin
+3,u111@gmail.com,u111,$2a$10$GL2xL2VtFUeej/trYmgY0e.tOvXVTmYLMuplqVren/ZIUPdSpcW1m,member
+4,u112@gmail.com,u112,$2a$10$/WuhWNdCH7VH3dlqvR9eI.QbiKk1ZPC/bqzgHwzHdX.SbsxthgxHa,member
+5,u113@gmail.com,u113,$2a$10$jH/Qa/eO2fVqadWaROSq4uXpo3M9PXEw5uB0oNGx44KHoWDnATgUu,member
