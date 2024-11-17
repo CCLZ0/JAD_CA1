@@ -6,15 +6,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login/Register Toggle</title>
-<link
-	href="https://fonts.googleapis.com/css2?family=Recursive&display=swap"
-	rel="stylesheet">
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../css/login.css">
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 	<%@ include file="../web_elements/navbar.jsp"%>
@@ -89,23 +84,7 @@
 
 		</div>
 	</div>
-
-	<script>
-		function toggleForm(formType) {
-			// Toggle active class on the tabs
-			document.getElementById('loginTab').classList.toggle('active',
-					formType === 'login');
-			document.getElementById('registerTab').classList.toggle('active',
-					formType === 'register');
-
-			// Toggle active class on the forms
-			document.getElementById('loginForm').classList.toggle('active',
-					formType === 'login');
-			document.getElementById('registerForm').classList.toggle('active',
-					formType === 'register');
-		}
-	</script>
-	<script src="../js/app.js"></script>
+	<script src="../js/login.js"></script>
 </body>
 </html>
 

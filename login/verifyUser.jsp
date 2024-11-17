@@ -16,7 +16,7 @@
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Define connection URL
-            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
+            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
 
             // Establish connection to URL
             Connection conn = DriverManager.getConnection(connURL);
@@ -24,6 +24,7 @@
             // Query to retrieve the user based on email
             String query = "SELECT * FROM user WHERE email = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
+            
             pstmt.setString(1, email);
 
             ResultSet rs = pstmt.executeQuery();
@@ -31,10 +32,13 @@
             if (rs.next()) {
                 // User found, retrieve stored hashed password
                 String storedHashedPassword = rs.getString("password");
-
+				int userId = rs.getInt("id");
+				String userRole = rs.getString("role");
                 // Compare the entered password with the stored hashed password using BCrypt
                 if (BCrypt.checkpw(password, storedHashedPassword)) {
                     // Password matches, proceed with login
+                    session.setAttribute("userId", userId);
+                    session.setAttribute("userRole", userRole);
                     response.sendRedirect("../user/index.jsp");
                 } else {
                     // Invalid password

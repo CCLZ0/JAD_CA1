@@ -22,10 +22,9 @@
                 <button class="btn btn-primary book-now-btn">Book Now</button>
                 <div id="suggestions" class="suggestions-list d-none"></div>
             </div>
-            
         </div>
     </div>
-
+	
     <!-- Divider-->
     <div class="divider text-center py-4">
         <h2>Cleaning services for all!</h2>
