@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,44 +6,62 @@
 <link rel="stylesheet" href="../css/navbar.css">
 </head>
 <body>
-<%@page import="java.sql.*"%>
-<%  
-    // Check if userId is stored in the session
+<%@page import="java.sql.*, java.util.ArrayList"%>
+<%
+    // Initialize an ArrayList to store categories
+    ArrayList<String[]> categories = new ArrayList<>();
     Integer userId = (Integer) session.getAttribute("userId");
     String userName = null;
-	String userRole = null;
+    String userRole = null;
+    
+    // Load JDBC Driver
+	Class.forName("com.mysql.cj.jdbc.Driver");
+	
+	// Define connection URL
+	String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
+	
+	// Establish connection to URL
+	Connection conn = DriverManager.getConnection(connURL);
+	try{
+	    // Query to retrieve categories
+	    String categoryQuery = "SELECT id, category_name FROM service_category";
+	    PreparedStatement categoryPstmt = conn.prepareStatement(categoryQuery);
+	
+	    ResultSet categoryRs = categoryPstmt.executeQuery();
+	    while (categoryRs.next()) {
+	        // Store each category as a String array [id, category_name]
+	        categories.add(new String[]{String.valueOf(categoryRs.getInt("id")), categoryRs.getString("category_name")});
+	    }
+	    System.out.println("Categories fetched:");
+	    for (String[] category : categories) {
+	        System.out.println("ID: " + category[0] + ", Name: " + category[1]);
+	    }
+	
+	    categoryRs.close();
+	    categoryPstmt.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+	
     if (userId != null) {
         try {
-            // Load JDBC Driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Query to retrieve user information
+            String userQuery = "SELECT name, role FROM user WHERE id = ?";
+            PreparedStatement userPstmt = conn.prepareStatement(userQuery);
+            userPstmt.setInt(1, userId);
 
-            // Define connection URL
-            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
-
-            // Establish connection to URL
-            Connection conn = DriverManager.getConnection(connURL);
-
-            // Query to retrieve the user based on userId
-            String query = "SELECT name, role FROM user WHERE id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setInt(1, userId);
-
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                // User found, retrieve the name
-                userName = rs.getString("name");
-                userRole = rs.getString("role");
-                System.out.println(userRole);
+            ResultSet userRs = userPstmt.executeQuery();
+            if (userRs.next()) {
+                userName = userRs.getString("name");
+                userRole = userRs.getString("role");
             }
-			
-            // Close resources
-            rs.close();
-            pstmt.close();
+            userRs.close();
+            userPstmt.close();
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
     }
 %>
 	<header>
@@ -56,9 +74,25 @@
 	        </button>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav ms-auto">
-	               	<li class="nav-item">
-	                	<a class="nav-link nav_item" href="../user/services.jsp">Services</a>
-	               	</li>
+	            <li class="nav-item dropdown">
+                    <a class="nav-link nav_item dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Services
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                        <% 
+                        // Iterate through the ArrayList and generate dropdown items
+                        for (String[] category : categories) { 
+                        %>
+                            <li>
+                                <a class="dropdown-item" href="../user/services.jsp?categoryId=<%= category[0] %>">
+                                    <%= category[1] %>
+                                </a>
+                            </li>
+                        <% 
+                        } 
+                        %>
+                    </ul>
+                </li>
 	                <% if (userId != null) { %>
 	                	<% if (userRole.equals("admin")) { %>
 	                		<li class="nav-item">
