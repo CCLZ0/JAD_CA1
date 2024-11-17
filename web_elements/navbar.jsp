@@ -11,20 +11,20 @@
     // Check if userId is stored in the session
     Integer userId = (Integer) session.getAttribute("userId");
     String userName = null;
-    
+	String userRole = null;
     if (userId != null) {
         try {
             // Load JDBC Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Define connection URL
-            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
+            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
 
             // Establish connection to URL
             Connection conn = DriverManager.getConnection(connURL);
 
             // Query to retrieve the user based on userId
-            String query = "SELECT name FROM user WHERE id = ?";
+            String query = "SELECT name, role FROM user WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, userId);
 
@@ -33,8 +33,10 @@
             if (rs.next()) {
                 // User found, retrieve the name
                 userName = rs.getString("name");
+                userRole = rs.getString("role");
+                System.out.println(userRole);
             }
-
+			
             // Close resources
             rs.close();
             pstmt.close();
@@ -57,19 +59,33 @@
 	               	<li class="nav-item">
 	                	<a class="nav-link nav_item" href="../user/services.jsp">Services</a>
 	               	</li>
-	                <li class="nav-item">
-	                	<a class="nav-link nav_item" href="../user/bookingHistory.jsp">Booking History</a>
-	                </li>
-	                <li class="nav-item">
-	                	<a class="nav-link nav_item" href="../user/bookings.jsp">Cart</a>
-	                </li>
 	                <% if (userId != null) { %>
-	                    <li class="nav-item">
-	                        <a class="nav-link nav_item" href="../user/profile.jsp">Hello, <%= userName %></a>
-	                    </li>
-	                    <li class="nav-item">
-	                        <a class="nav-link nav_item" href="../login/logout.jsp">Logout</a>
-	                    </li>
+	                	<% if (userRole.equals("admin")) { %>
+	                		<li class="nav-item">
+			                	<a class="nav-link nav_item" href="../admin/dashboard.jsp">Admin dashboard</a>
+			                </li>
+			                <li class="nav-item dropdown">
+				            	<a class="nav-link nav_item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><%= userName %></a>
+				                <ul class="dropdown-menu">
+					            	<li><a class="nav-item dropdown-item" href="../login/logout.jsp">Logout</a>
+				                </ul>
+				            </li>		                
+	                	<%} else if(userRole.equals("member")){%>
+		                	<li class="nav-item">
+			                	<a class="nav-link nav_item" href="../user/bookingHistory.jsp">Booking History</a>
+			                </li>
+			                <li class="nav-item">
+			                	<a class="nav-link nav_item" href="../user/bookings.jsp">Cart</a>
+			                </li>
+			                <li class="nav-item dropdown">
+				            	<a class="nav-link nav_item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><%= userName %></a>
+				                	<ul class="dropdown-menu">
+					                    <li><a class="nav-item dropdown-item" href="../user/profile.jsp">Profile</a></li>
+					                    <li><a class="nav-item dropdown-item" href="../user/feedback.jsp">Feedback</a></li>
+					                    <li><a class="nav-item dropdown-item" href="../login/logout.jsp">Logout</a>
+				                	</ul>
+				            </li>
+	                	<%} %>
 	                <% } else { %>
 	                    <li class="nav-item">
 	                        <a class="nav-link nav_item" href="../login/login.jsp">Login/Sign up</a>
