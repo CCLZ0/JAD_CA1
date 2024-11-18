@@ -1,7 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
-<%@ include file="../web_elements/navbar.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,9 +11,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+<%@ include file="../web_elements/navbar.jsp" %>
 
 <%
     String serviceId = request.getParameter("serviceId");
+    String serviceName = request.getParameter("serviceName");
     String bookingDate = request.getParameter("bookingDate");
     String remarks = request.getParameter("remarks");
 
@@ -40,7 +40,6 @@
 %>
                 <div class="alert alert-success">
                     Booking created successfully! Your booking status is "incomplete".
-                    <a href="index.jsp"><button class="btn-custom">Back to home</button></a>
                 </div>
 <%
             } else {
@@ -60,12 +59,13 @@
             if (bookPstmt != null) bookPstmt.close();
             if (conn != null) conn.close();
         }
-    } else if (userId != null && serviceId != null) {
+    } else if (userId != null && serviceName != null) {
 %>
         <div class="container mt-5">
             <h2>Book Service</h2>
             <form action="bookService.jsp" method="post">
                 <input type="hidden" name="serviceId" value="<%= serviceId %>">
+                <input type="hidden" name="serviceName" value="<%= serviceName %>">
                 <div class="mb-3">
                     <label for="bookingDate" class="form-label">Select Date</label>
                     <input type="date" class="form-control" id="bookingDate" name="bookingDate" required>
