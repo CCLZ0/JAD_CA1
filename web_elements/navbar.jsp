@@ -113,9 +113,8 @@
 			                </li>
 			                <li class="nav-item dropdown">
 				            	<a class="nav-link nav_item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><%= userName %></a>
-				                	<ul class="dropdown-menu">
+				                	<ul class="dropdown-menu dropdown-menu-end">
 					                    <li><a class="nav-item dropdown-item" href="../user/profile.jsp">Profile</a></li>
-					                    <li><a class="nav-item dropdown-item" href="../user/feedback.jsp">Feedback</a></li>
 					                    <li><a class="nav-item dropdown-item" href="../login/logout.jsp">Logout</a>
 				                	</ul>
 				            </li>

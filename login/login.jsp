@@ -51,6 +51,9 @@
                         case "registrationFailed":
                             out.print("Registration failed. Please try again.");
                             break;
+                        case "notLoggedIn":
+                        	out.print("Please log in first!");
+                            break;
                         default:
                             out.print("Unknown error occurred.");
                     }

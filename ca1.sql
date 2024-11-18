@@ -37,7 +37,7 @@ CREATE TABLE `booking` (
   CONSTRAINT `booking_fk1` FOREIGN KEY (`member_id`) REFERENCES `user` (`id`),
   CONSTRAINT `booking_fk2` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   CONSTRAINT `booking_fk5` FOREIGN KEY (`status`) REFERENCES `status` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,8 +46,39 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (1,3,1,'2024-11-16 10:00:00','Regular monthly cleaning',1),(2,3,5,'2024-11-17 15:30:00','Urgent carpet cleaning',2),(3,3,7,'2024-11-18 09:00:00','First-time upholstery service',3),(4,4,2,'2024-11-16 12:00:00','Sanitization after party',1),(5,4,6,'2024-11-17 08:00:00','Spot cleaning request',3),(6,4,9,'2024-11-18 14:00:00','Leather couch cleaning',2),(7,5,3,'2024-11-16 11:00:00','Exhaust cleaning maintenance',3),(8,5,4,'2024-11-17 13:00:00','General room cleaning',2),(9,5,8,'2024-11-18 10:30:00','Wood polishing service',1);
+INSERT INTO `booking` VALUES (1,3,1,'2024-11-16 10:00:00','Regular monthly cleaning',1),(2,3,5,'2024-11-17 15:30:00','Urgent carpet cleaning',2),(3,3,7,'2024-11-18 09:00:00','First-time upholstery service',3),(4,4,2,'2024-11-16 12:00:00','Sanitization after party',1),(5,4,6,'2024-11-17 08:00:00','Spot cleaning request',3),(6,4,9,'2024-11-18 14:00:00','Leather couch cleaning',2),(7,5,3,'2024-11-16 11:00:00','Exhaust cleaning maintenance',3),(8,5,4,'2024-11-17 13:00:00','General room cleaning',2),(9,5,8,'2024-11-18 10:30:00','Wood polishing service',1),(10,3,1,'2024-11-18 19:43:30','To be completed',1),(11,3,1,'2024-11-18 00:00:00','To be cleaned thoroughly',1),(12,3,1,'2024-11-30 00:00:00','To be cleaned thoroughly',1),(13,3,1,'2025-02-17 00:00:00','Clean birthday boy\'s toilet',1);
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `feedback`
+--
+
+DROP TABLE IF EXISTS `feedback`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `feedback` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `memberId` int NOT NULL,
+  `serviceId` int NOT NULL,
+  `description` text,
+  `suggestion` text NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `Feedback_fk1` (`memberId`),
+  KEY `Feedback_fk2` (`serviceId`),
+  CONSTRAINT `Feedback_fk1` FOREIGN KEY (`memberId`) REFERENCES `booking` (`member_id`),
+  CONSTRAINT `Feedback_fk2` FOREIGN KEY (`serviceId`) REFERENCES `booking` (`service_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `feedback`
+--
+
+LOCK TABLES `feedback` WRITE;
+/*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
+/*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -169,4 +200,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-17 19:55:45
+-- Dump completed on 2024-11-18 20:01:20
