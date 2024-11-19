@@ -37,7 +37,7 @@
 		<div class="col-md-6 content">
 			<h2>Welcome to Shine Pro!</h2>
 			<p>One of the rising and trusted names in the industry today,<br>Shine Pro provides a range of detailed professional cleaning services<br>and disinfection treatment to a wide range of customers.</p>
-			<a href="services.jsp"><button class="btn-custom">View Services</button></a>		
+			<a href="serviceCategories.jsp"><button class="btn-custom">View Services</button></a>		
 		</div>
 	</div>
 
