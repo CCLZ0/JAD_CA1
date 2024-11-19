@@ -15,75 +15,75 @@
 
 <%
     String serviceId = request.getParameter("serviceId");
-    String serviceName = request.getParameter("serviceName");
-    String bookingDate = request.getParameter("bookingDate");
+    String bookingTime = request.getParameter("bookingTime");
     String remarks = request.getParameter("remarks");
 
-    if (userId != null && serviceId != null && bookingDate != null) {
+    if (userId == null) {
+        response.sendRedirect("../login/login.jsp?error=notLoggedIn");
+    } else if ("POST".equalsIgnoreCase(request.getMethod()) && serviceId != null && bookingTime != null) {
         Connection bookConn = null;
-        PreparedStatement bookPstmt = null;
+        PreparedStatement pstmt = null;
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String bookConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
-            conn = DriverManager.getConnection(connURL);
+            bookConn = DriverManager.getConnection(bookConnURL);
 
-            String bookQuery = "INSERT INTO booking (member_id, service_id, booking_date, remarks, status) VALUES (?, ?, ?, ?, 1)";
-            bookPstmt = conn.prepareStatement(bookQuery);
-            bookPstmt.setInt(1, userId);
-            bookPstmt.setInt(2, Integer.parseInt(serviceId));
-            bookPstmt.setString(3, bookingDate);
-            bookPstmt.setString(4, remarks != null ? remarks : "");
-            int rowsAffected = bookPstmt.executeUpdate();
+            String query = "INSERT INTO cart (user_id, service_id, booking_time, price, remarks) VALUES (?, ?, ?, (SELECT price FROM service WHERE id = ?), ?)";
+            pstmt = bookConn.prepareStatement(query);
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, Integer.parseInt(serviceId));
+            pstmt.setString(3, bookingTime);
+            pstmt.setInt(4, Integer.parseInt(serviceId));
+            pstmt.setString(5, remarks != null ? remarks : "");
+            int rowsAffected = pstmt.executeUpdate();
 
             if (rowsAffected > 0) {
 %>
                 <div class="alert alert-success">
-                    Booking created successfully! Your booking status is "incomplete".
+                    Service added to cart successfully!
                 </div>
+                <%
+                    response.sendRedirect("cart.jsp");
+                %>
 <%
             } else {
 %>
                 <div class="alert alert-danger">
-                    Failed to create booking.
+                    Failed to add service to cart.
                 </div>
 <%
             }
         } catch (Exception e) {
 %>
             <div class="alert alert-danger">
-                An error occurred while creating the booking: <%= e.getMessage() %>
+                An error occurred while adding the service to the cart: <%= e.getMessage() %>
             </div>
 <%
         } finally {
-            if (bookPstmt != null) bookPstmt.close();
-            if (conn != null) conn.close();
+            if (pstmt != null) pstmt.close();
+            if (bookConn != null) bookConn.close();
         }
-    } else if (userId != null && serviceName != null) {
+    } else if (serviceId != null) {
 %>
         <div class="container mt-5">
             <h2>Book Service</h2>
-            <form action="bookService.jsp" method="post">
+            <form action="bookService.jsp" method="post" onsubmit="return validateBookingTime()">
                 <input type="hidden" name="serviceId" value="<%= serviceId %>">
-                <input type="hidden" name="serviceName" value="<%= serviceName %>">
                 <div class="mb-3">
-                    <label for="bookingDate" class="form-label">Select Date</label>
-                    <input type="date" class="form-control" id="bookingDate" name="bookingDate" required>
+                    <label for="bookingTime" class="form-label">Booking Time</label>
+                    <input type="datetime-local" class="form-control" id="bookingTime" name="bookingTime" required>
                 </div>
                 <div class="mb-3">
                     <label for="remarks" class="form-label">Remarks</label>
                     <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Add to Cart</button>
             </form>
         </div>
-<%
-    } else {
-    	response.sendRedirect("../login/login.jsp?error=notLoggedIn");
-%>
-
 <%
     }
 %>
 </body>
+<script src="../js/bookingForm.js"></script>
 </html>

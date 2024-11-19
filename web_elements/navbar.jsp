@@ -109,7 +109,7 @@
 			                	<a class="nav-link nav_item" href="../user/bookingHistory.jsp">Booking History</a>
 			                </li>
 			                <li class="nav-item">
-			                	<a class="nav-link nav_item" href="../user/bookings.jsp">Cart</a>
+			                	<a class="nav-link nav_item" href="../user/cart.jsp">Cart</a>
 			                </li>
 			                <li class="nav-item dropdown">
 				            	<a class="nav-link nav_item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><%= userName %></a>
