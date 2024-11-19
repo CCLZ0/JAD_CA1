@@ -60,4 +60,13 @@ VALUES
 (7, 5, 3, '2024-11-16 11:00:00', 'Exhaust cleaning maintenance', 3),
 (8, 5, 4, '2024-11-17 13:00:00', 'General room cleaning', 2),
 (9, 5, 8, '2024-11-18 10:30:00', 'Wood polishing service', 1);
+
+-- Insert User data
+INSERT INTO `user` (id, email, name, password, role) VALUES
+(1, 'K@gmail.com', 'K', '$2a$10$j5Ei75J13da18coWP1PENeA1AZkTvPD2boeH0rnmLt7xU7qmA3e3q', 'admin'),
+(2, 'CCLZ@gmail.com', 'CCLZ', '$2a$10$4rNeRhqW/5YTYX0SEMNnVejNXZpOQFf/FJrZqYNqBzSHOqRkq8ZBC', 'admin'),
+(3, 'u111@gmail.com', 'u111', '$2a$10$GL2xL2VtFUeej/trYmgY0e.tOvXVTmYLMuplqVren/ZIUPdSpcW1m', 'member'),
+(4, 'u112@gmail.com', 'u112', '$2a$10$/WuhWNdCH7VH3dlqvR9eI.QbiKk1ZPC/bqzgHwzHdX.SbsxthgxHa', 'member'),
+(5, 'u113@gmail.com', 'u113', '$2a$10$jH/Qa/eO2fVqadWaROSq4uXpo3M9PXEw5uB0oNGx44KHoWDnATgUu', 'member'),
+(6, 'liltay@gmail.com', 'liltay', '$2a$10$9Wd1oUPjW/m/1PnkgJBP0e87pP3v1lGSBYhDN8iSgoQAe7GZX6X9q', 'member');
 ```
