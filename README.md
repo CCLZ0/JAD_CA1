@@ -44,7 +44,7 @@ VALUES
 
 
 -- Insert data into `booking`
-INSERT INTO `booking` (id, member_id, service_id, booking_date, remarks, status)
+INSERT INTO `booking` (id, user_id, service_id, booking_date, remarks, status)
 VALUES 
 -- Bookings for Member 3
 (1, 3, 1, '2024-11-16 10:00:00', 'Regular monthly cleaning', 1),
