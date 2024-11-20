@@ -11,7 +11,11 @@
 </head>
 <body>
 <%@ include file="../web_elements/navbar.jsp" %>
-
+<%  
+	if (userId == null) {
+        response.sendRedirect("../login/login.jsp?error=notLoggedIn");
+	}else{
+%>
 <div class="container mt-5">
     <h1>Booking Confirmation</h1>
     <div class="alert alert-success">
@@ -19,5 +23,6 @@
     </div>
     <a href="index.jsp" class="btn btn-primary">Return to Home</a>
 </div>
+<% } %>
 </body>
 </html>
