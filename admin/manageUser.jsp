@@ -2,13 +2,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Manage Services</title>
+    <title>Manage Users</title>
     <link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body>	
+<body>
 	<%@ include file="../web_elements/navbar.jsp" %>
 	
 	<!-- Code to check if user is admin -->
@@ -65,8 +65,7 @@
     %>
     
     <div class="container mt-4">
-        <h1>Manage Services</h1>
-        <a href="addService.jsp" class="btn btn-success mb-3">Add New Service</a>
+        <h1>Manage Users</h1>
         <%
             Connection manageConn = null;
             Statement manageStmt = null;
@@ -77,8 +76,8 @@
                 String manageConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
                 manageConn = DriverManager.getConnection(manageConnURL);
                 
-                // Query to fetch services
-                String sql = "SELECT id, service_name, description, price FROM service";
+                // Query to fetch users
+                String sql = "SELECT id, email, name, role FROM user";
                 manageStmt = manageConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
                 manageRs = manageStmt.executeQuery(sql);
                 
@@ -89,9 +88,9 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Service Name</th>
-                                <th>Description</th>
-                                <th>Price</th>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Role</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -101,13 +100,13 @@
                             %>
                             <tr>
                                 <td><%= manageRs.getInt("id") %></td>
-                                <td><%= manageRs.getString("service_name") %></td>
-                                <td><%= manageRs.getString("description") %></td>
-                                <td>$<%= manageRs.getDouble("price") %></td>
+                                <td><%= manageRs.getString("email") %></td>
+                                <td><%= manageRs.getString("name") %></td>
+                                <td><%= manageRs.getString("role") %></td>
                                 <td>
                                     <!-- Edit and Delete Actions -->
-                                    <a href="editService.jsp?id=<%= manageRs.getInt("id") %>" class="btn btn-primary btn-sm">Edit</a>
-                                    <a href="deleteService.jsp?id=<%= manageRs.getInt("id") %>" class="btn btn-danger btn-sm">Delete</a>
+                                    <a href="editUser.jsp?id=<%= manageRs.getInt("id") %>" class="btn btn-primary btn-sm">Edit</a>
+                                    <a href="deleteUser.jsp?id=<%= manageRs.getInt("id") %>" class="btn btn-danger btn-sm">Delete</a>
                                 </td>
                             </tr>
                             <%
@@ -119,14 +118,14 @@
                 } else {
                     %>
                     <div class="alert alert-info">
-                        No services found.
+                        No users found.
                     </div>
                     <%
                 }
             } catch (Exception e) {
                 %>
                 <div class="alert alert-danger">
-                    An error occurred while fetching services: <%= e.getMessage() %>
+                    An error occurred while fetching users: <%= e.getMessage() %>
                 </div>
                 <%
                 e.printStackTrace();
