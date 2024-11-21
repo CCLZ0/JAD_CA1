@@ -58,8 +58,8 @@
                                                 Price: $<%= serviceRs.getDouble("price") %>
                                             </small>
                                         </p>
-                                        <a href="bookService.jsp?serviceId=<%= serviceRs.getInt("id") %>" class="btn btn-primary">Book Now</a>
-                                         <a href="serviceDetails.jsp?serviceId=<%= serviceRs.getInt("id") %>" class="btn btn-primary">More Details</a>
+                                        <a href="bookService.jsp?serviceId=<%= serviceRs.getInt("id") %>" class="btn bookBtn">Book Now</a>
+                                         <a href="serviceDetails.jsp?serviceId=<%= serviceRs.getInt("id") %>" class="btn detailBtn">More Details</a>
                                     </div>
                                 </div>
                             </div>

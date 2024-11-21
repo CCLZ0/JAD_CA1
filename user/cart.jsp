@@ -15,6 +15,31 @@
 
 <div class="container mt-5">
     <h1>Your Cart</h1>
+    <%
+        if (userId == null) {
+            response.sendRedirect("../login/login.jsp?error=notLoggedIn");
+            return;
+        }
+
+        Connection cartConn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean cartNotEmpty = false;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String cartConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
+            cartConn = DriverManager.getConnection(connURL);
+
+            String sql = "SELECT c.id, s.service_name, c.booking_time, c.price, c.remarks FROM cart c JOIN service s ON c.service_id = s.id WHERE c.user_id = ?";
+            stmt = cartConn.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            rs = stmt.executeQuery();
+
+            if (rs.isBeforeFirst()) {
+                cartNotEmpty = true;
+            }
+    %>
     <form action="checkout.jsp" method="post">
         <table class="table">
             <thead>
@@ -29,45 +54,47 @@
             </thead>
             <tbody>
                 <%
-                    if (userId == null) {
-                        response.sendRedirect("../login/login.jsp?error=notLoggedIn");
-                    } else {
-                        try (Connection cartConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC")) {
-                            String sql = "SELECT c.id, s.service_name, c.booking_time, c.price, c.remarks FROM cart c JOIN service s ON c.service_id = s.id WHERE c.user_id = ?";
-                            try (PreparedStatement stmt = cartConn.prepareStatement(sql)) {
-                                stmt.setInt(1, userId);
-                                try (ResultSet rs = stmt.executeQuery()) {
-                                    while (rs.next()) {
-                                        int cartId = rs.getInt("id");
-                                        String serviceName = rs.getString("service_name");
-                                        String bookingTime = rs.getString("booking_time");
-                                        double price = rs.getDouble("price");
-                                        String remarks = rs.getString("remarks");
+                    while (rs.next()) {
+                        int cartId = rs.getInt("id");
+                        String serviceName = rs.getString("service_name");
+                        String bookingTime = rs.getString("booking_time");
+                        double price = rs.getDouble("price");
+                        String remarks = rs.getString("remarks");
                 %>
-                                        <tr>
-                                            <td><input type="checkbox" name="cartIds" value="<%= cartId %>"></td>
-                                            <td><%= serviceName %></td>
-                                            <td><%= bookingTime %></td>
-                                            <td><%= price %></td>
-                                            <td><%= remarks %></td>
-                                            <td>
-                                                <a href="../cart/editCart.jsp?id=<%= cartId %>" class="btn btn-warning">Edit</a>
-                                                <a href="../cart/deleteCart.jsp?id=<%= cartId %>" class="btn btn-danger">Delete</a>
-                                            </td>
-                                        </tr>
+                <tr>
+                    <td><input type="checkbox" name="cartId" value="<%= cartId %>"></td>
+                    <td><%= serviceName %></td>
+                    <td><%= bookingTime %></td>
+                    <td><%= price %></td>
+                    <td><%= remarks %></td>
+                    <td><a href="removeFromCart.jsp?cartId=<%= cartId %>" class="btn btn-danger">Remove</a></td>
+                </tr>
                 <%
-                                    }
-                                }
-                            }
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
                     }
                 %>
             </tbody>
         </table>
-        <button type="submit" class="btn btn-success">Checkout</button>
+        <%
+            if (cartNotEmpty) {
+        %>
+        <button type="submit" class="btn checkoutBtn">Checkout</button>
+        <%
+            } else {
+        %>
+        <div class="alert alert-info">Your cart is empty.</div>
+        <%
+            }
+        %>
     </form>
+    <%
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (stmt != null) try { stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (cartConn != null) try { cartConn.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+    %>
 </div>
 </body>
 </html>
