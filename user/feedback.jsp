@@ -118,7 +118,7 @@
             <label for="suggestion" class="form-label">Suggestions</label>
             <textarea class="form-control" id="suggestion" name="suggestion" rows="3"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+        <button type="submit" class="btn feedbackBtn">Submit Feedback</button>
     </form>
 </div>
      <script src="../js/rating.js"></script>

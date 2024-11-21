@@ -91,7 +91,11 @@ img {
 	background-color: #f0f0f0;
 }
 
-.book-now-btn {
+.book-now-btn,
+.bookBtn,
+.detailBtn,
+.checkoutBtn,
+.feedbackBtn {
 	background-color: #00A3E0;
 	color: #F8F8F8;
 	border: none;
@@ -102,7 +106,11 @@ img {
 	transition: background-color 0.3s ease;
 }
 
-.book-now-btn:hover {
+.book-now-btn:hover,
+.bookBtn:hover,
+.detailBtn:hover,
+.checkoutBtn:hover,
+.feedbackBtn:hover {
 	background-color: #00457C;
 }
 /* Banner styles */
@@ -167,4 +175,8 @@ img {
 .pl-md-custom {
 	padding-left: 1.5rem;
 	padding-right: 0;
+}
+
+#saveBtn{
+	margin-bottom: 10px;
 }

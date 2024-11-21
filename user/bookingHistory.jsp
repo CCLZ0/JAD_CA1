@@ -64,7 +64,7 @@
                                 <td><%= statusName %></td>
                                 <td>
                                     <% if (statusId == 2 && feedbackId == 0) { %>
-                                        <a href="feedback.jsp?bookingId=<%= bookingId %>" class="btn btn-primary">Feedback</a>
+                                        <a href="feedback.jsp?bookingId=<%= bookingId %>" class="btn feedbackBtn">Feedback</a>
                                     <% } else if (statusId == 2) { %>
                                         <button class="btn btn-secondary" disabled>Feedback Submitted</button>
                                     <% } %>
