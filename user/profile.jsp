@@ -14,7 +14,7 @@
 <body>
 <%@ include file="../web_elements/navbar.jsp" %>
 
-<div class="container mt-5">
+<div class="specialContainer mt-5">
     <h1>Profile</h1>
     <%
         if (userId == null) {
