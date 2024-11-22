@@ -58,8 +58,8 @@ CREATE TABLE `cart` (
   `user_id` int NOT NULL,
   `service_id` int NOT NULL,
   `booking_time` datetime NOT NULL,
-  `price` int NOT NULL,
-  `remarks` varchar(255) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `cart_fk1` (`user_id`),
@@ -135,7 +135,7 @@ CREATE TABLE `service` (
 
 LOCK TABLES `service` WRITE;
 /*!40000 ALTER TABLE `service` DISABLE KEYS */;
-INSERT INTO `service` VALUES (1,1,'Deep Toilet Scrubbing','Thorough cleaning to remove stains and limescale',25.00),(2,1,'Sanitization Service','Disinfection of all surfaces and fixtures',30.00),(3,1,'Exhaust Vent Cleaning','Cleaning and maintenance of toilet exhaust fans',20.00),(4,2,'General Dusting and Mopping','Dusting and mopping of room surfaces',15.00),(5,2,'Carpet Vacuuming','Vacuuming and stain removal from carpets',40.00),(6,2,'Ceiling Spot Cleaning','Cleaning of visible spots and cobwebs',20.00),(7,3,'Upholstery Cleaning','Cleaning and shampooing of sofas and chairs',50.00),(8,3,'Wood Polishing','Polishing of wooden furniture to restore shine',35.00),(9,3,'Leather Care','Conditioning and cleaning of leather furniture',45.00);
+INSERT INTO `service` VALUES (1,1,'Deep Toilet Scrubbing','Thorough cleaning to remove stains and limescale',25.00),(2,1,'Sanitization Service','Disinfection of all surfaces and fixtures',30.00),(3,1,'Exhaust Vent Cleaning','Cleaning and maintenance of toilet exhaust fans',20.00),(4,2,'General Dusting and Mopping','Dusting and mopping of room surfaces',15.00),(5,2,'Carpet Vacuuming','Vacuuming and stain removal from carpets',40.00),(7,3,'Upholstery Cleaning','Cleaning and shampooing of sofas and chairs',50.00),(8,3,'Wood Polishing','Polishing of wooden furniture to restore shine',35.00),(9,3,'Leather Care','Conditioning and cleaning of leather furniture',45.00);
 /*!40000 ALTER TABLE `service` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,4 +236,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-20 20:01:41
+-- Dump completed on 2024-11-21 12:40:22
