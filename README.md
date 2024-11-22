@@ -8,3 +8,4 @@
 6. liltay - liltay
 ```
 
+SQL: jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC
