@@ -24,5 +24,6 @@
     <a href="index.jsp" class="btn btn-primary">Return to Home</a>
 </div>
 <% } %>
+<%@ include file="../web_elements/footer.html"%>
 </body>
 </html>

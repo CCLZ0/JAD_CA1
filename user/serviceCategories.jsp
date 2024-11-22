@@ -20,7 +20,7 @@
 	<%@ include file="../web_elements/navbar.jsp"%>
 
 	<div class="container mt-5">
-		<h1>Service Categories</h1>
+		<h2>Service Categories</h2>
 		<div class="row">
 			<%
 			Connection serviceCatConn = null;
@@ -47,7 +47,7 @@
 							<h5 class="card-title"><%=categoryName%></h5>
 							<p class="card-text"><%=description%></p>
 							<a href="services.jsp?categoryId=<%=categoryId%>"
-								class="btn btn-primary">Related Services</a>
+								class="btn btn-primary btn-custom">Related Services</a>
 						</div>
 					</div>
 				</div>
@@ -84,5 +84,6 @@
 			%>
 		</div>
 	</div>
+	<%@ include file="../web_elements/footer.html"%>
 </body>
 </html>

@@ -108,5 +108,6 @@
         <button type="submit" class="btn btn-success">Update Password</button>
     </form>
 </div>
+<%@ include file="../web_elements/footer.html"%>
 </body>
 </html>

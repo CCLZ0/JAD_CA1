@@ -80,6 +80,7 @@
             <%
         }
     %>
+    <%@ include file="../web_elements/footer.html"%>
 </div>
 </body>
 </html>
