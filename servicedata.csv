@@ -1,0 +1,9 @@
+id,category_id,service_name,description,price
+1,1,"Deep Toilet Scrubbing","Thorough cleaning to remove stains and limescale",25.00
+2,1,"Sanitization Service","Disinfection of all surfaces and fixtures",30.00
+3,1,"Exhaust Vent Cleaning","Cleaning and maintenance of toilet exhaust fans",20.00
+4,2,"General Dusting and Mopping","Dusting and mopping of room surfaces",15.00
+5,2,"Carpet Vacuuming","Vacuuming and stain removal from carpets",40.00
+7,3,"Upholstery Cleaning","Cleaning and shampooing of sofas and chairs",50.00
+8,3,"Wood Polishing","Polishing of wooden furniture to restore shine",35.00
+9,3,"Leather Care","Conditioning and cleaning of leather furniture",45.00

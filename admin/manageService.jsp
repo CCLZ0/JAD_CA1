@@ -1,5 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.sql.*" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ include file="../auth/checkAdmin.jsp" %>
 <html>
 <head>
     <title>Manage Services</title>
@@ -8,82 +9,24 @@
     <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body>	
-	<%@ include file="../web_elements/navbar.jsp" %>
+<body>
+    <%@ include file="../web_elements/navbar.jsp" %>
 	
-	<!-- Code to check if user is admin -->
-    <%  
-        if (userId == null) {
-            // Redirect to login if the user is not logged in
-            out.println("<script>alert('You need to log in first!'); window.location='../login/login.jsp';</script>");
-            return;
-        }
-
-        Connection roleConn = null;
-        PreparedStatement roleStmt = null;
-        ResultSet roleRs = null;
-
-        try {
-            // Database connection setup
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String roleConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
-            roleConn = DriverManager.getConnection(roleConnURL);
-
-            // Query to get the role of the logged-in user
-            String sql = "SELECT role FROM user WHERE id = ?";
-            roleStmt = roleConn.prepareStatement(sql);
-            roleStmt.setInt(1, userId);
-
-            roleRs = roleStmt.executeQuery();
-
-            if (roleRs.next()) {
-                String role = roleRs.getString("role");
-                if ("admin".equals(role)) {
-                    // User is an admin, continue with page
-                } else {
-                    out.println("<script>alert('You do not have permission to access the admin dashboard.'); window.location='../user/index.jsp';</script>");
-                    return;
-                }
-            } else {
-                out.println("<script>alert('No user found.'); window.location='../login/login.jsp';</script>");
-                return;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            out.println("<script>alert('An error occurred while checking the user role. Please try again.'); window.location='../login/login.jsp';</script>");
-            return;
-        } catch (Exception e) {
-            e.printStackTrace();
-            out.println("<script>alert('An unexpected error occurred.'); window.location='../login/login.jsp';</script>");
-            return;
-        } finally {
-            try { if (roleRs != null) roleRs.close(); } catch (SQLException e) {}
-            try { if (roleStmt != null) roleStmt.close(); } catch (SQLException e) {}
-            try { if (roleConn != null) roleConn.close(); } catch (SQLException e) {}
-        }
-    %>
-    
     <div class="container mt-4">
         <h1>Manage Services</h1>
         <a href="addService.jsp" class="btn btn-success mb-3">Add New Service</a>
         <%
-            Connection manageConn = null;
-            Statement manageStmt = null;
-            ResultSet manageRs = null;
-            try {
-                // Establish database connection
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                String manageConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
-                manageConn = DriverManager.getConnection(manageConnURL);
-                
-                // Query to fetch services
-                String sql = "SELECT id, service_name, description, price FROM service";
-                manageStmt = manageConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                manageRs = manageStmt.executeQuery(sql);
-                
-                if (manageRs.next()) {
-                    manageRs.beforeFirst(); // Reset cursor to start
+            String sql = "SELECT id, service_name, description, price FROM service";
+            try (Connection manageConn = DriverManager.getConnection(
+                         "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+                 Statement manageStmt = manageConn.createStatement();
+                 ResultSet manageRs = manageStmt.executeQuery(sql)) {
+
+                if (!manageRs.isBeforeFirst()) { 
+                    %>
+                    <div class="alert alert-info">No services found.</div>
+                    <%
+                } else {
                     %>
                     <table class="table table-bordered">
                         <thead>
@@ -105,7 +48,6 @@
                                 <td><%= manageRs.getString("description") %></td>
                                 <td>$<%= manageRs.getDouble("price") %></td>
                                 <td>
-                                    <!-- Edit and Delete Actions -->
                                     <a href="editService.jsp?id=<%= manageRs.getInt("id") %>" class="btn btn-primary btn-sm">Edit</a>
                                     <a href="deleteService.jsp?id=<%= manageRs.getInt("id") %>" class="btn btn-danger btn-sm">Delete</a>
                                 </td>
@@ -116,27 +58,18 @@
                         </tbody>
                     </table>
                     <%
-                } else {
-                    %>
-                    <div class="alert alert-info">
-                        No services found.
-                    </div>
-                    <%
                 }
-            } catch (Exception e) {
-                %>
-                <div class="alert alert-danger">
-                    An error occurred while fetching services: <%= e.getMessage() %>
-                </div>
-                <%
+            } catch (SQLException e) {
                 e.printStackTrace();
-            } finally {
-                try { if (manageRs != null) manageRs.close(); } catch (SQLException ignore) { }
-                try { if (manageStmt != null) manageStmt.close(); } catch (SQLException ignore) { }
-                try { if (manageConn != null) manageConn.close(); } catch (SQLException ignore) { }
+                %>
+                <div class="alert alert-danger">An error occurred while fetching services: <%= e.getMessage() %></div>
+                <%
             }
         %>
     </div>
+    <%@ include file="../web_elements/footer.html"%>
 </body>
 </html>
+
+
 

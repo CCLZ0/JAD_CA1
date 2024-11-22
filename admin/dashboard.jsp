@@ -1,78 +1,159 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*"%>
+<%@ include file="../auth/checkAdmin.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Administrator Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<meta charset="UTF-8">
+<title>Administrator Dashboard</title>
+<link
+	href="https://fonts.googleapis.com/css2?family=Recursive&display=swap"
+	rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" type="text/css" href="../css/dashboard.css">
 </head>
 <body>
-    <%@ include file="../web_elements/navbar.jsp" %>
-    
-    <!-- Code to check if user is admin -->
-    <%  
-        if (userId == null) {
-            // Redirect to login if the user is not logged in
-            out.println("<script>alert('You need to log in first!'); window.location='../login/login.jsp';</script>");
-            return;
-        }
+	<%@ include file="../web_elements/navbar.jsp"%>
+	<div class="d-flex justify-content-start gap-3 mt-4">
+		<a href="manageService.jsp" class="btn btn-primary">Manage
+			Services</a> <a href="manageUser.jsp" class="btn btn-primary">Manage
+			Users</a>
+	</div>
 
-        Connection roleConn = null;
-        PreparedStatement roleStmt = null;
-        ResultSet roleRs = null;
+	<div class="container mt-5">
+		<h1 class="mb-4">Administrator Dashboard</h1>
 
-        try {
-            // Database connection setup
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String roleConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
-            roleConn = DriverManager.getConnection(roleConnURL);
+		<h2>Average rating of each Service</h2>
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>Service Name</th>
+					<th>Description</th>
+					<th>Average Rating</th>
+				</tr>
+			</thead>
+			<tbody>
+				<%
+                    try (Connection ratingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC")) {
+                        String sql = "SELECT s.service_name, s.description, IFNULL(AVG(f.rating), 0) AS average_rating " +
+                                     "FROM service s " +
+                                     "LEFT JOIN feedback f ON s.id = f.service_id " +
+                                     "GROUP BY s.id " +
+                                     "ORDER BY s.service_name";
+                        try (PreparedStatement stmt = ratingConn.prepareStatement(sql);
+                             ResultSet rs = stmt.executeQuery()) {
+                             while (rs.next()) {
+                                 String serviceName = rs.getString("service_name");
+                                 String description = rs.getString("description");
+                                 double averageRating = rs.getDouble("average_rating");
+                %>
+				<tr>
+					<td><%= serviceName %></td>
+					<td><%= description %></td>
+					<td><%= averageRating %></td>
+				</tr>
+				<%
+                             }
+                        }
+                    } catch (SQLException e) {
+                        out.println("<tr><td colspan='3'>Error fetching data: " + e.getMessage() + "</td></tr>");
+                    }
+                %>
+			</tbody>
+		</table>
+	</div>
 
-            // Query to get the role of the logged-in user
-            String sql = "SELECT role FROM user WHERE id = ?";
-            roleStmt = roleConn.prepareStatement(sql);
-            roleStmt.setInt(1, userId);
+	<h2>Number of bookings for each Service</h2>
+	<div class="d-flex justify-content-center">
+		<canvas id="servicePieChart"></canvas>
+	</div>
 
-            roleRs = roleStmt.executeQuery();
+	<% 
+            String sqlBookings = "SELECT s.service_name, COUNT(b.id) AS booking_count " +
+                                 "FROM service s " +
+                                 "LEFT JOIN booking b ON s.id = b.service_id " +
+                                 "GROUP BY s.id " +
+                                 "ORDER BY booking_count DESC";
+            StringBuilder labels = new StringBuilder();
+            StringBuilder data = new StringBuilder();
 
-            if (roleRs.next()) {
-                String role = roleRs.getString("role");
-                if ("admin".equals(role)) {
-                    // User is an admin, continue with page
-                } else {
-                    out.println("<script>alert('You do not have permission to access the admin dashboard.'); window.location='../user/index.jsp';</script>");
-                    return;
+            try (Connection bookingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+                 PreparedStatement stmt = bookingConn.prepareStatement(sqlBookings);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                boolean isFirst = true;
+                while (rs.next()) {
+                    String serviceName = rs.getString("service_name");
+                    int bookingCount = rs.getInt("booking_count");
+
+                    if (!isFirst) {
+                        labels.append(",");
+                        data.append(",");
+                    }
+                    labels.append("'").append(serviceName).append("'");
+                    data.append(bookingCount);
+
+                    isFirst = false;
                 }
-            } else {
-                out.println("<script>alert('No user found.'); window.location='../login/login.jsp';</script>");
-                return;
+            } catch (SQLException e) {
+                out.println("<div class='alert alert-danger'>Error fetching booking data: " + e.getMessage() + "</div>");
             }
+        %>
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            out.println("<script>alert('An error occurred while checking the user role. Please try again.'); window.location='../login/login.jsp';</script>");
-            return;
-        } catch (Exception e) {
-            e.printStackTrace();
-            out.println("<script>alert('An unexpected error occurred.'); window.location='../login/login.jsp';</script>");
-            return;
-        } finally {
-            try { if (roleRs != null) roleRs.close(); } catch (SQLException e) {}
-            try { if (roleStmt != null) roleStmt.close(); } catch (SQLException e) {}
-            try { if (roleConn != null) roleConn.close(); } catch (SQLException e) {}
-        }
-    %>
-    
-    <div class="dashboard-container">
-        <h1>Administrator Dashboard</h1>
-        <ul class="menu">
-            <li><a href="manageService.jsp">Manage Services (CRUD)</a></li>
-            <li><a href="manageUser.jsp">Manage Users (CRUD)</a></li>
-        </ul>
-    </div>
+	<script>
+		// Pie Chart Data
+		const ctx = document.getElementById('servicePieChart').getContext('2d');
+		new Chart(ctx, {
+			type : 'pie',
+			data : {
+				labels : [
+	<%= labels.toString() %>
+		], // Service names
+				datasets : [ {
+					label : 'Bookings',
+					data : [
+	<%= data.toString() %>
+		], // Booking counts
+					backgroundColor : [ 'rgba(255, 99, 132, 0.7)',
+							'rgba(54, 162, 235, 0.7)',
+							'rgba(255, 206, 86, 0.7)',
+							'rgba(75, 192, 192, 0.7)',
+							'rgba(153, 102, 255, 0.7)',
+							'rgba(255, 159, 64, 0.7)' ],
+					borderColor : [ 'rgba(255, 99, 132, 1)',
+							'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)',
+							'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)',
+							'rgba(255, 159, 64, 1)' ],
+					borderWidth : 1
+				} ]
+			},
+			options : {
+				responsive : true,
+				maintainAspectRatio : true, // Ensures that the chart scales proportionally
+				plugins : {
+					legend : {
+						position : 'top',
+					},
+					tooltip : {
+						enabled : true
+					}
+				}
+			}
+		});
+	</script>
+	<%@ include file="../web_elements/footer.html"%>
 </body>
 </html>
+
+
+
+
 
 
