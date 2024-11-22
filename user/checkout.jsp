@@ -67,6 +67,6 @@
         </div>
         <a href="cart.jsp" class="btn btn-primary">Return to Cart</a>
     <% } %>
-
+<%@ include file="../web_elements/footer.html"%>
 </body>
 </html>

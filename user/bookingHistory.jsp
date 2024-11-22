@@ -89,5 +89,6 @@
         </tbody>
     </table>
 </div>
+<%@ include file="../web_elements/footer.html"%>
 </body>
 </html>

@@ -2,6 +2,7 @@
 
 html {
 	scroll-behavior: smooth;
+	height: 100%;
 }
 
 body {
@@ -9,6 +10,7 @@ body {
 	padding: 0;
 	margin: 0;
 	background-color: #F8F8F8;
+	height: 100%;
 	overflow-x: hidden;
 }
 
@@ -112,6 +114,7 @@ img {
 .checkoutBtn:hover,
 .feedbackBtn:hover {
 	background-color: #00457C;
+	color: #F8F8F8;
 }
 /* Banner styles */
 
@@ -125,8 +128,9 @@ img {
 	font-weight: bold;
 	width: 100%;
 }
-
 /* Divider styles */
+
+/* Section styles */
 .section {
 	padding: 0;
 }
@@ -170,7 +174,10 @@ img {
 
 .btn-custom:hover {
 	background-color: #00457C;
+	color: #F8F8F8;
 }
+
+/* Section styles */
 
 .pl-md-custom {
 	padding-left: 1.5rem;
@@ -179,4 +186,14 @@ img {
 
 #saveBtn{
 	margin-bottom: 10px;
+}
+
+.container {
+	min-height: 100%;
+	overflow:auto;
+	padding-bottom: 100px;
+}
+
+.container h2{
+	padding: 20px 0;
 }

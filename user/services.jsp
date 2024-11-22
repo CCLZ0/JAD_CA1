@@ -10,7 +10,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <%
+    <div class="container">
+        <%
         Connection serviceConn = null;
         PreparedStatement servicePstmt = null;
         ResultSet serviceRs = null;
@@ -43,7 +44,6 @@
                     serviceRs.beforeFirst();
                     %>
                     <h2>Services in <%= categoryName %></h2>
-                    <div class="container">
                         <div class="row">
                         <%
                         while (serviceRs.next()) {
@@ -67,7 +67,6 @@
                         }
                         %>
                         </div>
-                    </div>
                     <%
                 } else {
                     %>
@@ -97,5 +96,8 @@
             <%
         }
     %>
-</body>
+    </div>
+    
+ <%@ include file="../web_elements/footer.html"%>
+</body> 
 </html>

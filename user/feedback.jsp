@@ -121,6 +121,7 @@
         <button type="submit" class="btn feedbackBtn">Submit Feedback</button>
     </form>
 </div>
+<%@ include file="../web_elements/footer.html"%>
      <script src="../js/rating.js"></script>
 </body>
 </html>
