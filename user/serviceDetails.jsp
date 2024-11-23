@@ -49,7 +49,7 @@
                             <p class="card-text"><%= serviceDescription %></p>
                             <p class="card-text">Category: <%= categoryName %></p>
                             <p class="card-text">Price: $<%= servicePrice %></p>
-                            <a href="bookService.jsp?serviceId=<%= serviceId %>" class="btn btn-primary">Book Now</a>
+                            <a href="bookService.jsp?serviceId=<%= serviceId %>" class="btn bookBtn">Book Now</a>
                         </div>
                     </div>
                     <%
@@ -80,7 +80,8 @@
             <%
         }
     %>
-    <%@ include file="../web_elements/footer.html"%>
+   
 </div>
+ <%@ include file="../web_elements/footer.html"%>
 </body>
 </html>

@@ -8,7 +8,7 @@
     <title>Add New Service</title>
     <link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
@@ -38,7 +38,7 @@
                         Statement manageStmt = null;
                         ResultSet manageRs = null;
                         try {
-                            manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+                            manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
                             String categoryQuery = "SELECT id, category_name FROM service_category";
                             manageStmt = manageConn.createStatement();
                             manageRs = manageStmt.executeQuery(categoryQuery);
@@ -58,6 +58,10 @@
                     %>
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="imgPath" class="form-label">Image Path:</label>
+                <input type="text" id="imgPath" name="imgPath" class="form-control" required>
+            </div>
             <button type="submit" class="btn btn-primary">Add Service</button>
         </form>
 
@@ -67,20 +71,22 @@
                 String description = request.getParameter("description");
                 double price = Double.parseDouble(request.getParameter("price"));
                 int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+                String imgPath = request.getParameter("imgPath");
                 Connection manageConn2 = null;
                 PreparedStatement pstmt = null;
 
                 try {
                     // Connect to the database
-                    manageConn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+                    manageConn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
 
                     // Insert new service into the database
-                    String sql = "INSERT INTO service (service_name, description, price, category_id) VALUES (?, ?, ?, ?)";
+                    String sql = "INSERT INTO service (service_name, description, price, category_id, img) VALUES (?, ?, ?, ?, ?)";
                     pstmt = manageConn2.prepareStatement(sql);
                     pstmt.setString(1, serviceName);
                     pstmt.setString(2, description);
                     pstmt.setDouble(3, price);
                     pstmt.setInt(4, categoryId);
+                    pstmt.setString(5, imgPath);
                     pstmt.executeUpdate();
                     
                     out.println("<div class='alert alert-success mt-3'>Service added successfully!</div>");

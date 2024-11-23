@@ -16,7 +16,7 @@
     try {
         // Database connection setup
         Class.forName("com.mysql.cj.jdbc.Driver");
-        String roleConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
+        String roleConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
         roleConn = DriverManager.getConnection(roleConnURL);
 
         // Query to get the role of the logged-in user

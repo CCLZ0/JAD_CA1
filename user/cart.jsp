@@ -67,7 +67,10 @@
                     <td><%= bookingTime %></td>
                     <td><%= price %></td>
                     <td><%= remarks %></td>
-                    <td><a href="removeFromCart.jsp?cartId=<%= cartId %>" class="btn btn-danger">Remove</a></td>
+                    <td>
+                        <a href="../cart/editCart.jsp?id=<%= cartId %>" class="btn btn-primary">Edit</a>
+                        <a href="../cart/deleteCart.jsp?cartId=<%= cartId %>" class="btn btn-danger">Remove</a>
+                    </td>
                 </tr>
                 <%
                     }
@@ -77,7 +80,7 @@
         <%
             if (cartNotEmpty) {
         %>
-        <button type="submit" class="btn checkoutBtn">Checkout</button>
+        <button type="submit" class="btn btn-primary">Checkout</button>
         <%
             } else {
         %>

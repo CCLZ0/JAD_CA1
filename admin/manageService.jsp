@@ -18,7 +18,7 @@
         <%
             String sql = "SELECT id, service_name, description, price FROM service";
             try (Connection manageConn = DriverManager.getConnection(
-                         "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+                         "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
                  Statement manageStmt = manageConn.createStatement();
                  ResultSet manageRs = manageStmt.executeQuery(sql)) {
 
