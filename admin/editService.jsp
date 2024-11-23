@@ -8,7 +8,7 @@
     <title>Edit Service</title>
     <link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
@@ -26,13 +26,14 @@
             String description = "";
             double price = 0.0;
             int categoryId = 0;
+            String imgPath = "";
             String successMessage = "";
             String errorMessage = "";
 
             // Fetch service details to pre-fill the form
             try {
-                manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
-                String sql = "SELECT service_name, description, price, category_id FROM service WHERE id = ?";
+                manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
+                String sql = "SELECT * FROM service WHERE id = ?";
                 manageStmt = manageConn.prepareStatement(sql);
                 manageStmt.setInt(1, serviceId);
                 manageRs = manageStmt.executeQuery();
@@ -42,6 +43,7 @@
                     description = manageRs.getString("description");
                     price = manageRs.getDouble("price");
                     categoryId = manageRs.getInt("category_id");
+                    imgPath = manageRs.getString("img");
                 }
             } catch (Exception e) {
                 errorMessage = "Error fetching service details: " + e.getMessage();
@@ -95,7 +97,7 @@
                     <%
                         // Fetch categories from the database
                         try {
-                            manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+                            manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
                             String categoryQuery = "SELECT id, category_name FROM service_category";
                             manageStmt = manageConn.prepareStatement(categoryQuery);
                             manageRs = manageStmt.executeQuery();
@@ -116,6 +118,10 @@
                     %>
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="imgPath" class="form-label">Image Path:</label>
+                <input type="text" id="imgPath" name="imgPath" class="form-control" value="<%= imgPath %>" required>
+            </div>
 
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary">Update Service</button>
@@ -133,7 +139,7 @@
 
                 try {
                     // Connect to the database
-                    manageConn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+                    manageConn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
 
                     // Update service details in the database
                     String sql = "UPDATE service SET service_name = ?, description = ?, price = ?, category_id = ? WHERE id = ?";

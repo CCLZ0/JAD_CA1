@@ -9,7 +9,7 @@
     <title>Edit User</title>
     <link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
@@ -34,7 +34,7 @@
         int userIdToEdit = Integer.parseInt(request.getParameter("id"));
         try {
             // Establish connection
-            manageconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+            manageconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
             // Prepare SQL statement
             managestmt = manageconn.prepareStatement("SELECT email, name, role FROM user WHERE id = ?");
             managestmt.setInt(1, userIdToEdit);
@@ -82,7 +82,7 @@
                     }
 
                     // Establish connection
-                    manageconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+                    manageconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
                     // Prepare SQL update statement
                     String updateQuery = "UPDATE user SET email = ?, name = ?, role = ?";
 

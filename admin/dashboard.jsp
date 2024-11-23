@@ -21,15 +21,14 @@
 </head>
 <body>
 	<%@ include file="../web_elements/navbar.jsp"%>
-	<div class="d-flex justify-content-start gap-3 mt-4">
-		<a href="manageService.jsp" class="btn btn-primary">Manage
-			Services</a> <a href="manageUser.jsp" class="btn btn-primary">Manage
-			Users</a>
-	</div>
 
-	<div class="container mt-5">
+	<div class="specialContainer mt-5">
 		<h1 class="mb-4">Administrator Dashboard</h1>
-
+		<div class="d-flex justify-content-center gap-3 mt-4">
+			<a href="manageService.jsp" class="btn btn-primary">Manage Services</a> 
+			<a href="#" class="btn btn-primary">Manage Bookings (WIP)</a>
+			<a href="manageUser.jsp" class="btn btn-primary">Manage Users</a>
+		</div>
 		<h2>Average rating of each Service</h2>
 		<table class="table table-bordered table-hover">
 			<thead>
@@ -41,7 +40,7 @@
 			</thead>
 			<tbody>
 				<%
-                    try (Connection ratingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC")) {
+                    try (Connection ratingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC")) {
                         String sql = "SELECT s.service_name, s.description, IFNULL(AVG(f.rating), 0) AS average_rating " +
                                      "FROM service s " +
                                      "LEFT JOIN feedback f ON s.id = f.service_id " +
@@ -70,7 +69,7 @@
 		</table>
 	</div>
 
-	<h2>Number of bookings for each Service</h2>
+	<h2 id="header2">Number of bookings for each Service</h2>
 	<div class="d-flex justify-content-center">
 		<canvas id="servicePieChart"></canvas>
 	</div>
@@ -84,7 +83,7 @@
             StringBuilder labels = new StringBuilder();
             StringBuilder data = new StringBuilder();
 
-            try (Connection bookingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+            try (Connection bookingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
                  PreparedStatement stmt = bookingConn.prepareStatement(sqlBookings);
                  ResultSet rs = stmt.executeQuery()) {
 

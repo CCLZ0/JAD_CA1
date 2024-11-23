@@ -11,53 +11,66 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+<%@ include file="../web_elements/navbar.jsp" %>
 
-   <%
-        Integer userId = (Integer) session.getAttribute("userId");
+<div class="container mt-5">
+    <h1>Checkout</h1>
+    <%
+        if (userId == null) {
+            response.sendRedirect("../login/login.jsp?error=notLoggedIn");
+            return;
+        }
+
+        String[] selectedCartIds = request.getParameterValues("cartId");
         boolean success = false;
         String errorMessage = null;
 
-        if (userId == null) {
-            response.sendRedirect("../login/login.jsp?error=notLoggedIn");
-        } else {
-            String[] cartIds = request.getParameterValues("cartIds");
-            String cartIdCondition = "";
+        if (selectedCartIds == null || selectedCartIds.length == 0) {
+            // No items selected, checkout all items
+            selectedCartIds = new String[] { "ALL" };
+        }
 
-            if (cartIds != null && cartIds.length > 0) {
-                cartIdCondition = " AND id IN (" + String.join(",", cartIds) + ")";
-            }
+        String cartIdCondition = "";
+        if (!selectedCartIds[0].equals("ALL")) {
+            cartIdCondition = " AND id IN (" + String.join(",", selectedCartIds) + ")";
+        }
 
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC")) {
-                // Move data from cart to booking table and set status to "Incomplete"
-                String sql = "INSERT INTO booking (member_id, service_id, booking_date, remarks, status) " +
-                             "SELECT user_id, service_id, booking_time, remarks, (SELECT id FROM status WHERE status_name = 'Incomplete') " +
-                             "FROM cart WHERE user_id = ?" + cartIdCondition;
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setInt(1, userId);
-                    int rowsInserted = stmt.executeUpdate();
-                    if (rowsInserted > 0) {
-                        success = true;
-                    } else {
-                        errorMessage = "No items in the cart to checkout.";
-                    }
-                }
+        Connection checkoutConn = null;
+        PreparedStatement stmt = null;
 
-                if (success) {
-                    // Clear the selected items from the cart
-                    sql = "DELETE FROM cart WHERE user_id = ?" + cartIdCondition;
-                    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                        stmt.setInt(1, userId);
-                        stmt.executeUpdate();
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                errorMessage = "An error occurred during the checkout process: " + e.getMessage();
+        try {
+            checkoutConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
+
+            // Move data from cart to booking table and set status to "Incomplete"
+            String sql = "INSERT INTO booking (user_id, service_id, booking_date, remarks, status) " +
+                         "SELECT user_id, service_id, booking_time, remarks, (SELECT id FROM status WHERE status_name = 'Incomplete') " +
+                         "FROM cart WHERE user_id = ?" + cartIdCondition;
+            stmt = checkoutConn.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                success = true;
+            } else {
+                errorMessage = "No items in the cart to checkout.";
             }
 
             if (success) {
-                response.sendRedirect("bookingConfirmation.jsp");
+                // Clear the selected items from the cart
+                sql = "DELETE FROM cart WHERE user_id = ?" + cartIdCondition;
+                stmt = checkoutConn.prepareStatement(sql);
+                stmt.setInt(1, userId);
+                stmt.executeUpdate();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            errorMessage = "An error occurred during the checkout process: " + e.getMessage();
+        } finally {
+            if (stmt != null) try { stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (checkoutConn != null) try { checkoutConn.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+
+        if (success) {
+            response.sendRedirect("bookingConfirmation.jsp");
         }
     %>
 
@@ -67,6 +80,7 @@
         </div>
         <a href="cart.jsp" class="btn btn-primary">Return to Cart</a>
     <% } %>
+</div>
 <%@ include file="../web_elements/footer.html"%>
 </body>
 </html>
