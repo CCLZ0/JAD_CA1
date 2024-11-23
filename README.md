@@ -8,9 +8,9 @@
 6. liltay - liltay
 ```
 
-SQL: jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC
+# SQL jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC
 
-#Data Insertion
+# Data Insertion
 ```
 -- Insert User data
 INSERT INTO `user` (id, email, name, password, role) VALUES
