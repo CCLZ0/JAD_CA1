@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,8 +41,8 @@
                         case "passwordMismatch":
                             out.print("Passwords do not match.");
                             break;
-                        case "userExists":
-                            out.print("Username or email already exists.");
+                        case "emailExists":
+                            out.print("Email already exists.");
                             break;
                         case "invalidLogin":
                             out.print("Invalid username/email or password.");
@@ -52,7 +51,10 @@
                             out.print("Registration failed. Please try again.");
                             break;
                         case "notLoggedIn":
-                        	out.print("Please log in first!");
+                            out.print("Please log in first!");
+                            break;
+                        case "passwordTooShort":
+                            out.print("Password must be at least 4 characters long.");
                             break;
                         default:
                             out.print("Unknown error occurred.");
@@ -66,7 +68,7 @@
 
 			<!-- Login Form -->
 			<form id="loginForm" class="form active" action="verifyUser.jsp"
-				method="post">
+				method="POST">
 				<h2>Login</h2>
 				<input type="text" name="email" placeholder="Email" required>
 				<input type="password" name="password" placeholder="Password"
@@ -74,14 +76,14 @@
 				<button type="submit" class="btn btn-primary">Login</button>
 			</form>
 
+			<!-- Register Form -->
 			<form id="registerForm" class="form" action="registerUser.jsp"
-				method="post">
+				method="POST">
 				<h2>Register</h2>
-				<input type="text" name="username" placeholder="Username" required>
-				<input type="email" name="email" placeholder="Email" required>
-				<input type="password" name="password" placeholder="Password"
-					required> <input type="password" name="confirmPassword"
-					placeholder="Confirm Password" required>
+				<input type="text" name="username2" placeholder="Username" required>
+				<input type="email" name="email2" placeholder="Email" required>
+				<input type="password" name="password2" placeholder="Password" required> 
+				<input type="password" name="confirmPassword2" placeholder="Confirm Password" required>
 				<button type="submit" class="btn btn-primary">Register</button>
 			</form>
 
@@ -91,7 +93,6 @@
 	
 </body>
 </html>
-
 
 
 

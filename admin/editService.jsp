@@ -10,6 +10,30 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Client-side validation
+        function validateForm() {
+            const serviceName = document.getElementById("serviceName").value;
+            const description = document.getElementById("description").value;
+            const price = document.getElementById("price").value;
+            const categoryId = document.getElementById("categoryId").value;
+            const imgPath = document.getElementById("imgPath").value;
+
+            if (serviceName.trim() === "" || description.trim() === "" || price.trim() === "" || categoryId === "" || imgPath.trim() === "") {
+                alert("All fields must be filled out.");
+                return false; // Prevent form submission
+            }
+
+            // Check for valid price
+            if (isNaN(price) || price <= 0) {
+                alert("Please enter a valid price greater than 0.");
+                return false;
+            }
+
+            return true; // Allow form submission
+        }
+    </script>
 </head>
 <body>
     <%@ include file="../web_elements/navbar.jsp" %>
@@ -32,7 +56,7 @@
 
             // Fetch service details to pre-fill the form
             try {
-                manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
+                manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
                 String sql = "SELECT * FROM service WHERE id = ?";
                 manageStmt = manageConn.prepareStatement(sql);
                 manageStmt.setInt(1, serviceId);
@@ -73,7 +97,7 @@
             }
         %>
 
-        <form action="editService.jsp" method="post">
+        <form action="editService.jsp" method="post" onsubmit="return validateForm();">
             <input type="hidden" name="id" value="<%= serviceId %>">
 
             <div class="mb-3">
@@ -97,7 +121,7 @@
                     <%
                         // Fetch categories from the database
                         try {
-                            manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
+                            manageConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
                             String categoryQuery = "SELECT id, category_name FROM service_category";
                             manageStmt = manageConn.prepareStatement(categoryQuery);
                             manageRs = manageStmt.executeQuery();
@@ -139,7 +163,7 @@
 
                 try {
                     // Connect to the database
-                    manageConn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
+                    manageConn2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
 
                     // Update service details in the database
                     String sql = "UPDATE service SET service_name = ?, description = ?, price = ?, category_id = ? WHERE id = ?";

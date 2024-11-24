@@ -3,42 +3,43 @@
 <%@ page import="java.sql.*" %>
 
 <%
-    String username = request.getParameter("username");
-    String email = request.getParameter("email");
-    String password = request.getParameter("password");
-    String confirmPassword = request.getParameter("confirmPassword");
+    String username = request.getParameter("username2");
+    String email = request.getParameter("email2");
+    String password = request.getParameter("password2");
+    String confirmPassword = request.getParameter("confirmPassword2");
 
- 	// Debugging output (You can remove this after debugging)
-    out.println("Username: " + username);
-    out.println("Email: " + email);
-    out.println("Password: " + password);
-    out.println("Confirm Password: " + confirmPassword);
+    // Debugging output (You can remove this after debugging)
+    System.out.println("Username: " + username);
+    System.out.println("Email: " + email);
+    System.out.println("Password: " + password);
+    System.out.println("Confirm Password: " + confirmPassword);
 
-    // Check for missing data in any of the fields
-    if (username == null || username.isEmpty() || email == null || email.isEmpty() || 
-        password == null || password.isEmpty() || confirmPassword == null || confirmPassword.isEmpty()) {
-        response.sendRedirect("registerUser.jsp?error=100"); // Redirect if fields are missing
-    } else if (!password.equals(confirmPassword)) {
-        response.sendRedirect("registerUser.jsp?error=passwordMismatch"); // Redirect if passwords don't match
+    if (!password.equals(confirmPassword)) {
+        response.sendRedirect("login.jsp?error=passwordMismatch"); // Redirect if passwords don't match
+    } else  if (password == null || password.length() <= 4) {
+        response.sendRedirect("login.jsp?error=passwordTooShort");
     } else {
         try {
             // Load JDBC Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Define connection URL for MySQL
-            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
+            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
             Connection conn = DriverManager.getConnection(connURL);
 
-            // Check if a user with the same username or email already exists
-            String checkQuery = "SELECT * FROM user WHERE name = ? OR email = ?";
+            // Check if a user with the same email already exists
+            String checkQuery = "SELECT COUNT(*) FROM user WHERE email = ?";
             PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
-            checkStmt.setString(1, username);
-            checkStmt.setString(2, email);
+            checkStmt.setString(1, email);
             ResultSet checkRs = checkStmt.executeQuery();
 
-            if (checkRs.next()) {
-                // If username or email already exists
-                response.sendRedirect("registerUser.jsp?error=userExists");
+            checkRs.next(); // Move the cursor to the first row
+            int count = checkRs.getInt(1); // Get the count of rows with the same email
+
+            if (count > 0) {
+                // If email already exists
+                response.sendRedirect("login.jsp?error=emailExists");
+                return;
             } else {
                 // Hash the password before storing it
                 String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
@@ -56,7 +57,7 @@
                     response.sendRedirect("login.jsp?success=1");
                 } else {
                     // If registration failed, redirect back with error
-                    response.sendRedirect("registerUser.jsp?error=registrationFailed");
+                    response.sendRedirect("login.jsp?error=registrationFailed");
                 }
 
                 insertStmt.close();
@@ -68,10 +69,14 @@
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("registerUser.jsp?error=unknown");
+            response.sendRedirect("login.jsp?error=unknown");
         }
     }
 %>
+
+
+
+
 
 
 

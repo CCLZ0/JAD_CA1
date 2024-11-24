@@ -21,7 +21,7 @@
             try {
                 // Establish database connection
                 Class.forName("com.mysql.cj.jdbc.Driver");
-                String manageConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
+                String manageConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
                 manageConn = DriverManager.getConnection(manageConnURL);
                 
                 // Query to fetch users

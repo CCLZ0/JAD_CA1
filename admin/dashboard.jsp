@@ -40,7 +40,7 @@
 			</thead>
 			<tbody>
 				<%
-                    try (Connection ratingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC")) {
+                    try (Connection ratingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC")) {
                         String sql = "SELECT s.service_name, s.description, IFNULL(AVG(f.rating), 0) AS average_rating " +
                                      "FROM service s " +
                                      "LEFT JOIN feedback f ON s.id = f.service_id " +
@@ -83,7 +83,7 @@
             StringBuilder labels = new StringBuilder();
             StringBuilder data = new StringBuilder();
 
-            try (Connection bookingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
+            try (Connection bookingConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
                  PreparedStatement stmt = bookingConn.prepareStatement(sqlBookings);
                  ResultSet rs = stmt.executeQuery()) {
 
@@ -150,6 +150,8 @@
 	<%@ include file="../web_elements/footer.html"%>
 </body>
 </html>
+
+
 
 
 
