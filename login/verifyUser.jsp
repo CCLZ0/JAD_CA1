@@ -16,7 +16,7 @@
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Define connection URL
-            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC";
+            String connURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC";
 
             // Establish connection to URL
             Connection conn = DriverManager.getConnection(connURL);

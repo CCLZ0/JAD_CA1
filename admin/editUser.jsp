@@ -34,7 +34,7 @@
         int userIdToEdit = Integer.parseInt(request.getParameter("id"));
         try {
             // Establish connection
-            manageconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
+            manageconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
             // Prepare SQL statement
             managestmt = manageconn.prepareStatement("SELECT email, name, role FROM user WHERE id = ?");
             managestmt.setInt(1, userIdToEdit);
@@ -70,58 +70,76 @@
             newPassword = request.getParameter("newPassword");
             confirmNewPassword = request.getParameter("confirmNewPassword");
 
-            try {
-                // Check if passwords match
-                if (!newPassword.equals(confirmNewPassword)) {
-                    errorMessage = "Passwords do not match.";
-                } else {
-                    // Hash the new password using bcrypt
-                    String hashedPassword = null;
-                    if (newPassword != null && !newPassword.isEmpty()) {
-                        hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
-                    }
-
-                    // Establish connection
-                    manageconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=Cclz@hOmeSQL&serverTimezone=UTC");
-                    // Prepare SQL update statement
-                    String updateQuery = "UPDATE user SET email = ?, name = ?, role = ?";
-
-                    // Only update password if provided
-                    if (hashedPassword != null) {
-                        updateQuery += ", password = ?";
-                    }
-                    updateQuery += " WHERE id = ?";
-                    
-                    managestmt = manageconn.prepareStatement(updateQuery);
-                    managestmt.setString(1, email);
-                    managestmt.setString(2, name);
-                    managestmt.setString(3, role);
-                    
-                    // Set password parameter only if a new password is provided
-                    if (hashedPassword != null) {
-                        managestmt.setString(4, hashedPassword);
-                        managestmt.setInt(5, userIdToEdit);
-                    } else {
-                        managestmt.setInt(4, userIdToEdit);
-                    }
-
-                    // Execute update
-                    if (managestmt.executeUpdate() > 0) {
-                        successMessage = "User updated successfully!";
-                    } else {
-                        errorMessage = "No rows updated. Please try again.";
-                    }
-                }
-            } catch (SQLException e) {
-                errorMessage = "Error updating user: " + e.getMessage();
-                e.printStackTrace();
-            } finally {
-                // Close resources
+            // Validate input data
+            if (email == null || email.isEmpty()) {
+                errorMessage = "Email is required.";
+            } else if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                errorMessage = "Invalid email format.";
+            } else if (name == null || name.isEmpty()) {
+                errorMessage = "Name is required.";
+            } else if (role == null || (!role.equals("admin") && !role.equals("member"))) {
+                errorMessage = "Role must be either 'admin' or 'member'.";
+            } else if (!newPassword.equals(confirmNewPassword)) {
+                errorMessage = "Passwords do not match.";
+            } else if (newPassword != null && !newPassword.isEmpty() && newPassword.length() < 4) {
+                errorMessage = "Password must be at least 4 characters long.";
+            } else {
                 try {
-                    if (managestmt != null) managestmt.close();
-                    if (manageconn != null) manageconn.close();
+                    // Check if email is already used by another user
+                    manageconn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ca1?user=root&password=root&serverTimezone=UTC");
+                    managestmt = manageconn.prepareStatement("SELECT COUNT(*) FROM user WHERE email = ? AND id != ?");
+                    managestmt.setString(1, email);
+                    managestmt.setInt(2, userIdToEdit);
+                    ResultSet rs = managestmt.executeQuery();
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        errorMessage = "Email is already in use by another user.";
+                    } else {
+                        // Hash the new password if provided
+                        String hashedPassword = null;
+                        if (newPassword != null && !newPassword.isEmpty()) {
+                            hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+                        }
+
+                        // Prepare SQL update statement
+                        String updateQuery = "UPDATE user SET email = ?, name = ?, role = ?";
+
+                        // Only update password if provided
+                        if (hashedPassword != null) {
+                            updateQuery += ", password = ?";
+                        }
+                        updateQuery += " WHERE id = ?";
+
+                        managestmt = manageconn.prepareStatement(updateQuery);
+                        managestmt.setString(1, email);
+                        managestmt.setString(2, name);
+                        managestmt.setString(3, role);
+
+                        // Set password parameter only if a new password is provided
+                        if (hashedPassword != null) {
+                            managestmt.setString(4, hashedPassword);
+                            managestmt.setInt(5, userIdToEdit);
+                        } else {
+                            managestmt.setInt(4, userIdToEdit);
+                        }
+
+                        // Execute update
+                        if (managestmt.executeUpdate() > 0) {
+                            successMessage = "User updated successfully!";
+                        } else {
+                            errorMessage = "No rows updated. Please try again.";
+                        }
+                    }
                 } catch (SQLException e) {
+                    errorMessage = "Error updating user: " + e.getMessage();
                     e.printStackTrace();
+                } finally {
+                    // Close resources
+                    try {
+                        if (managestmt != null) managestmt.close();
+                        if (manageconn != null) manageconn.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -181,6 +199,7 @@
     <%@ include file="../web_elements/footer.html"%>
 </body>
 </html>
+
 
 
 
