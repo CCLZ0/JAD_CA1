@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="application/json; charset=UTF-8"
+<%-- <%@ page language="java" contentType="application/json; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*,java.util.ArrayList,java.util.List"%>
 <%
@@ -45,4 +45,4 @@
         }
         response.getWriter().write("]");
     }
-%>
+%> --%>

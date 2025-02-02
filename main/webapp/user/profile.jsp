@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
+<%@ include file="../web_elements/navbar.jsp" %>
+<%@ page import = "models.User" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,86 +8,83 @@
 <title>Profile</title>
 <link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </head>
 <body>
-<%@ include file="../web_elements/navbar.jsp" %>
+
 
 <div class="container mt-5">
     <h1>Profile</h1>
-    <%
-        if (userId == null) {
-            response.sendRedirect("../login/login.jsp?error=notLoggedIn");
-            return;
-        }
 
+    <%
+	    User user = (User) session.getAttribute("user");
+	    if (user == null) {
+	        response.sendRedirect(request.getContextPath() + "/login/login.jsp?error=notLoggedIn");
+	        return;
+	    }
+	    
         String successMessage = request.getParameter("success");
         String errorMessage = request.getParameter("error");
 
-        if (successMessage != null) {
+        if ("profileUpdated".equals(successMessage)) {
     %>
         <div class="alert alert-success">
-            <%= successMessage %>
+            Profile updated successfully.
         </div>
     <%
-        } else if (errorMessage != null) {
+        } else if ("passwordUpdated".equals(successMessage)) {
+    %>
+        <div class="alert alert-success">
+            Password updated successfully.
+        </div>
+    <%
+        } else if ("missingData".equals(errorMessage)) {
     %>
         <div class="alert alert-danger">
-            <%= errorMessage %>
+            Missing data! Please fill out all fields.
         </div>
     <%
-        }
-
-        Connection profileConn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        String userEmail = "";
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String profileConnURL = "jdbc:mysql://localhost:3306/ca1?user=root&password=root123&serverTimezone=UTC";
-            profileConn = DriverManager.getConnection(profileConnURL);
-
-            String sql = "SELECT name, email FROM user WHERE id = ?";
-            pstmt = profileConn.prepareStatement(sql);
-            pstmt.setInt(1, userId);
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                userName = rs.getString("name");
-                userEmail = rs.getString("email");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-            if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-            if (profileConn != null) try { profileConn.close(); } catch (SQLException e) { e.printStackTrace(); }
+        } else if ("passwordMismatch".equals(errorMessage)) {
+    %>
+        <div class="alert alert-danger">
+            New passwords do not match.
+        </div>
+    <%
+        } else if ("incorrectPassword".equals(errorMessage)) {
+    %>
+        <div class="alert alert-danger">
+            Current password is incorrect.
+        </div>
+    <%
+        } else if ("updateFailed".equals(errorMessage)) {
+    %>
+        <div class="alert alert-danger">
+            An error occurred while updating the profile.
+        </div>
+    <%
         }
     %>
 
     <div id="profileForm">
-        <form action="editProfile.jsp" method="post">
+        <form action="<%= request.getContextPath() %>/EditProfileServlet" method="post">
             <div class="mb-3">
                 <label for="userName" class="form-label">Username</label>
-                <input type="text" class="form-control editable" id="userName" name="userName" value="<%= userName %>" disabled>
+                <input type="text" class="form-control editable" id="userName" name="userName" value="<%= ((User) session.getAttribute("user")).getName() %>" disabled>
             </div>
             <div class="mb-3">
                 <label for="userEmail" class="form-label">Email</label>
-                <input type="email" class="form-control editable" id="userEmail" name="userEmail" value="<%= userEmail %>" disabled>
+                <input type="email" class="form-control editable" id="userEmail" name="userEmail" value="<%= ((User) session.getAttribute("user")).getEmail() %>" disabled>
             </div>
             <button type="button" class="btn btn-primary" id="editButton" onclick="toggleEdit()">Edit Profile</button>
             <button type="submit" class="btn btn-success" id="saveButton" style="display: none;">Save Changes</button>
             <button type="button" class="btn btn-warning" id="changePasswordButton" style="display: none;" onclick="toggleChangePassword()">Change Password</button>
         </form>
-        <a href="../login/logout.jsp" class="btn btn-danger mt-3" id="logoutButton">Logout</a>
+        <a href="${pageContext.request.contextPath}/login/logout.jsp" class="btn btn-danger mt-3" id="logoutButton">Logout</a>
     </div>
 
     <div id="changePasswordForm" style="display: none;">
-        <form action="changePassword.jsp" method="post">
+        <form action="<%= request.getContextPath() %>/ChangePasswordServlet" method="post">
             <div class="mb-3">
                 <label for="currentPasswordChange" class="form-label">Current Password</label>
                 <input type="password" class="form-control" id="currentPasswordChange" name="currentPasswordChange" required>
@@ -104,7 +102,7 @@
         </form>
     </div>
 </div>
-<script src="../js/profile.js"></script>
+<script src="${pageContext.request.contextPath}/js/profile.js"></script>
 <%@ include file="../web_elements/footer.html" %>
 </body>
 </html>

@@ -1,4 +1,6 @@
-window.onload = function() {
+// loadNavbar.js
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Fetching navbar data from:', contextPath + '/NavbarServlet');
     fetch(contextPath + '/NavbarServlet')
         .then(response => {
             if (!response.ok) throw new Error('Navbar data retrieval failed');
@@ -66,4 +68,4 @@ window.onload = function() {
             console.error('Error while fetching navbar data:', error);
             alert('Failed to load navbar. Please try again later.');
         });
-};
+});

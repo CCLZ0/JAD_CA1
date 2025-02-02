@@ -8,6 +8,7 @@ public class User implements Serializable {
     private String email;
     private String name;
     private String role;
+    private String password;
 
     // Constructors, getters, and setters
     public User(int userid, String email, String name, String role) {
@@ -58,4 +59,12 @@ public class User implements Serializable {
                 ", role='" + role + '\'' +
                 '}';
     }
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }

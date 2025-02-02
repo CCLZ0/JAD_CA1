@@ -7,21 +7,21 @@
 <title>Shine Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 	<%@ include file="../web_elements/navbar.jsp"%>
 	
 	<div class="banner position-relative text-center text-white">
-        <img src="../img/banner.png" class="img-fluid w-100" alt="Banner Image" id="bannerImg">
+        <img src="${pageContext.request.contextPath}/img/banner.png" class="img-fluid w-100" alt="Banner Image" id="bannerImg">
         <div class="overlay d-flex flex-column justify-content-center align-items-center">
             <h1 class="display-4 fw-bold text-shadow" id="overlayText">We leave your house sparkling clean!</h1>
             <div class="searchBar d-flex mt-3">
-                <input type="text" class="form-control me-2" placeholder="Search" id="serviceSearch">
-                <button class="btn btn-primary book-now-btn">Book Now</button>
-                <div id="suggestions" class="suggestions-list d-none"></div>
-            </div>
+		        <input type="text" autocomplete="off" class="form-control me-2" placeholder="Search" id="serviceSearch">
+		        <button class="btn btn-primary book-now-btn">Book Now</button>
+		        <div id="suggestions" class="suggestions-list d-none"></div>
+		    </div>
         </div>
     </div>
 	
@@ -53,6 +53,9 @@
 	</div>
 
 	<%@ include file="../web_elements/footer.html"%>
-	<script src="../js/search.js"></script>
+	<script>
+	    contextPath = '<%= request.getContextPath() %>';
+	</script>
+	<script src="${pageContext.request.contextPath}/js/search.js"></script>
 </body>
 </html>
