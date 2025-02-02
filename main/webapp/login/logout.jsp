@@ -15,7 +15,7 @@
         }
 
         // Redirect to login page or home page after logout
-        response.sendRedirect("../login/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/login/login.jsp");
     %>
 </body>
 </html>

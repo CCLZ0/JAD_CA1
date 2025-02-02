@@ -1,22 +1,53 @@
+document.addEventListener('DOMContentLoaded', function() {
+    fetch(`${contextPath}/ProfileServlet`)
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    alert('User not logged in');
+                    window.location.href = `${contextPath}/login/login.jsp?error=notLoggedIn`;
+                } else if (response.status === 404) {
+                    alert('User not found');
+                    window.location.href = `${contextPath}/login/login.jsp?error=userNotFound`;
+                }
+                throw new Error('Failed to load profile data');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('userName').value = data.name;
+            document.getElementById('userEmail').value = data.email;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+});
+
 function toggleEdit() {
-    const fields = document.querySelectorAll('.editable');
-    fields.forEach(field => {
-        field.disabled = !field.disabled;
+    const editButton = document.getElementById('editButton');
+    const saveButton = document.getElementById('saveButton');
+    const changePasswordButton = document.getElementById('changePasswordButton');
+    const inputs = document.querySelectorAll('.editable');
+
+    inputs.forEach(input => {
+        input.disabled = !input.disabled;
     });
-    document.getElementById('editButton').style.display = 'none';
-    document.getElementById('logoutButton').style.display = 'none';
-    document.getElementById('saveButton').style.display = 'block';
-    document.getElementById('changePasswordButton').style.display = 'block';
+
+    if (editButton.style.display === 'none') {
+        editButton.style.display = 'block';
+        saveButton.style.display = 'none';
+        changePasswordButton.style.display = 'none';
+    } else {
+        editButton.style.display = 'none';
+        saveButton.style.display = 'block';
+        changePasswordButton.style.display = 'block';
+    }
 }
 
 function toggleChangePassword() {
-    const profileForm = document.getElementById('profileForm');
     const changePasswordForm = document.getElementById('changePasswordForm');
-    if (profileForm.style.display === 'block') {
-        profileForm.style.display = 'none';
+    if (changePasswordForm.style.display === 'none') {
         changePasswordForm.style.display = 'block';
     } else {
-        profileForm.style.display = 'block';
         changePasswordForm.style.display = 'none';
     }
 }

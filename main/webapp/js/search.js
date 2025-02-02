@@ -5,10 +5,12 @@ document.querySelector('.book-now-btn').addEventListener('click', redirectToBook
 
 function getSuggestions() {
   const query = document.getElementById('serviceSearch').value;
+  console.log('Fetching suggestions for query:', query); // Debugging statement
 
-  fetch('../user/searchService.jsp?query=' + encodeURIComponent(query))
+  fetch(`${contextPath}/SearchServiceServlet?query=` + encodeURIComponent(query))
       .then(response => response.json())
       .then(data => {
+        console.log('Received suggestions:', data); // Debugging statement
         const suggestionsDiv = document.getElementById('suggestions');
         suggestionsDiv.innerHTML = '';
         if (data.length === 0) {
@@ -33,12 +35,16 @@ function getSuggestions() {
           });
         }
 
-        suggestionsDiv.style.display = 'block';
+        suggestionsDiv.classList.remove('d-none');
       })
       .catch(error => console.error('Error fetching suggestions:', error));
 }
 
 function showSuggestions() {
+  const query = document.getElementById('serviceSearch').value;
+  if (query) {
+    getSuggestions();
+  }
   document.getElementById("suggestions").classList.remove("d-none");
 }
 
@@ -52,7 +58,7 @@ function redirectToBooking() {
   const serviceName = document.getElementById('serviceSearch').value;
   const serviceId = document.getElementById('serviceSearch').dataset.serviceId;
   if (serviceName && serviceId) {
-    window.location.href = 'bookService.jsp?serviceId=' + serviceId + '&serviceName=' + encodeURIComponent(serviceName);
+    window.location.href = `${contextPath}/user/bookService.jsp?serviceId=` + serviceId + '&serviceName=' + encodeURIComponent(serviceName);
   } else {
     alert('Please enter a service name and select a valid service');
   }
