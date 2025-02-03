@@ -2,41 +2,40 @@ package admin_servlet;
 
 import java.io.IOException;
 
+import java.util.List;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.RequestDispatcher;
+import dbaccess.User;
 import dbaccess.UserDAO;
 
 /**
- * Servlet implementation class DeleteUserServlet
+ * Servlet implementation class GetAllUsersServlet
  */
-@WebServlet("/DeleteUserServlet")
-public class DeleteUserServlet extends HttpServlet {
+@WebServlet("/GetAllUsersServlet")
+public class GetAllUsersServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public DeleteUserServlet() {
+    public GetAllUsersServlet() {
         super();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         try {
-            // Retrieve user ID from request
-        	int Id = Integer.parseInt(request.getParameter("id"));
-
-            // Access database to delete the user
+            // Access database to retrieve user details
             UserDAO userDatabase = new UserDAO();
-            int rowsAffected = userDatabase.deleteUser(Id);
+            List<User> users = userDatabase.listAllUsers();
 
-            if (rowsAffected > 0) {
-                // Redirect to GetAllUsersServlet to display the updated list of users
-                response.sendRedirect(request.getContextPath() + "/GetAllUsersServlet");
-            } else {
-                throw new Exception("Failed to delete user");
-            }
+            request.setAttribute("users", users);
+
+            String url = "/admin/manageUser.jsp";
+            RequestDispatcher rd = request.getRequestDispatcher(url);
+            rd.forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,9 +46,8 @@ public class DeleteUserServlet extends HttpServlet {
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        doPost(request, response);
+        doGet(request, response);
     }
 }
-
