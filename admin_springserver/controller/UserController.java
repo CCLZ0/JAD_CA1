@@ -17,12 +17,12 @@ import com.shinepro.admin.dbaccess.UserDAO;
 @RequestMapping("/user") // Link: http://localhost:8081/admin/user/<path>
 public class UserController {
 
-	@RequestMapping(method = RequestMethod.GET, path = "/getUser/{uid}")
-	public User getUser(@PathVariable("uid") String uid) {
+	@RequestMapping(method = RequestMethod.GET, path = "/getUser/{id}")
+	public User getUser(@PathVariable("id") int id) {
 		User user = null;
 		try {
 			UserDAO db = new UserDAO();
-			user = db.getUserDetails(uid);
+			user = db.getUserDetails(id);
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 		}
@@ -54,8 +54,8 @@ public class UserController {
 		return rec; // <-- using the default ResponseBody with custom status from Spring
 	}
 
-	@RequestMapping(path = "/updateUser/{uid}", consumes = "application/json", method = RequestMethod.PUT)
-	public int updateUser(@PathVariable String uid, @RequestBody User user) {
+	@RequestMapping(method = RequestMethod.PUT, path = "/updateUser/{id}")
+	public int updateUser(@PathVariable int uid, @RequestBody User user) {
 		int rec = 0;
 		try {
 			UserDAO db = new UserDAO();
@@ -67,12 +67,12 @@ public class UserController {
 		return rec;
 	}
 
-	@RequestMapping(path = "/deleteUser/{uid}", method = RequestMethod.DELETE)
-	public int deleteUser(@PathVariable String uid) {
+	@RequestMapping(method = RequestMethod.DELETE, path = "/deleteUser/{id}")
+	public int deleteUser(@PathVariable int id) {
 		int rec = 0;
 		try {
 			UserDAO db = new UserDAO();
-			rec = db.deleteUser(uid);
+			rec = db.deleteUser(id);
 			System.out.print("...in UserController - done deleting user: " + rec);
 		} catch (Exception e) {
 			System.out.print("Error: " + e.toString());
@@ -97,12 +97,12 @@ public class UserController {
 		return authenticatedUser;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, path = "/isAdmin/{userid}")
-	public boolean isAdmin(@PathVariable("userid") int userid) {
+	@RequestMapping(method = RequestMethod.GET, path = "/isAdmin/{id}")
+	public boolean isAdmin(@PathVariable("id") int id) {
 		boolean isAdmin = false;
 		try {
 			UserDAO db = new UserDAO();
-			isAdmin = db.isAdmin(userid);
+			isAdmin = db.isAdmin(id);
 		} catch (SQLException e) {
 			System.out.println("Error verifying admin status: " + e);
 		}

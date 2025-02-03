@@ -1,20 +1,21 @@
 package com.shinepro.admin.dbaccess;
 
 import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserDAO {
 
-	public User getUserDetails(String userid) throws SQLException {
+	public User getUserDetails(int userid) throws SQLException {
 		User uBean = null;
 		Connection conn = null;
 		try {
 			conn = DBConnection.getConnection();
 			String sqlStr = "SELECT id, email, name, password, role FROM user WHERE id = ?";
 			PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-			pstmt.setString(1, userid);
+			pstmt.setInt(1, userid);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				uBean = new User(rs.getInt("id"), rs.getString("email"), rs.getString("name"), rs.getString("password"),
@@ -71,7 +72,7 @@ public class UserDAO {
 		}
 	}
 
-	public int updateUser(String uid, User user) throws SQLException {
+	public int updateUser(int uid, User user) throws SQLException {
 		String query = "UPDATE user SET email = ?, name = ?, password = ?, role = ? WHERE id = ?";
 		String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
 		try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -79,15 +80,15 @@ public class UserDAO {
 			stmt.setString(2, user.getName());
 			stmt.setString(3, hashedPassword);
 			stmt.setString(4, user.getRole());
-			stmt.setString(5, uid);
+			stmt.setInt(5, uid);
 			return stmt.executeUpdate();
 		}
 	}
 
-	public int deleteUser(String uid) throws SQLException {
+	public int deleteUser(int uid) throws SQLException {
 		String query = "DELETE FROM user WHERE id = ?";
 		try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-			stmt.setString(1, uid);
+			stmt.setInt(1, uid);
 			return stmt.executeUpdate();
 		}
 	}

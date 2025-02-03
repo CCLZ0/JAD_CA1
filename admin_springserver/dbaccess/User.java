@@ -1,30 +1,30 @@
-package com.shinepro.admin.dbaccess;
+package dbaccess;
 
 import java.io.Serializable;
 
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
-    private int userid;
+    private int id;
     private String email;
     private String name;
     private String password;
     private String role;
 
     // Constructors, getters, and setters
-    public User(int userid, String email, String name, String password, String role) {
-        this.userid = userid;
+    public User(int id, String email, String name, String password, String role) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
         this.role = role;
     }
 
-    public int getUserid() {
-        return userid;
+    public int getid() {
+        return id;
     }
 
-    public void setUserid(int userid) {
-        this.userid = userid;
+    public void setid(int id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -62,7 +62,7 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "userid=" + userid +
+                "userid=" + id +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
