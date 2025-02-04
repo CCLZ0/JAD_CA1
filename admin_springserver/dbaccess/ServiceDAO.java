@@ -1,6 +1,7 @@
 package com.shinepro.admin.dbaccess;
 
 import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,9 +103,9 @@ public class ServiceDAO {
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Map<String, Object> rating = new HashMap<>();
-                rating.put("serviceName", rs.getString("service_name"));
-                rating.put("description", rs.getString("description"));
                 rating.put("averageRating", rs.getDouble("average_rating"));
+                rating.put("description", rs.getString("description"));
+                rating.put("serviceName", rs.getString("service_name"));
                 ratings.add(rating);
             }
         }

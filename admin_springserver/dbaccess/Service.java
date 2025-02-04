@@ -7,6 +7,8 @@ public class Service {
     private String description;
     private double price;
     private String img;
+    private double averageRating;
+    private int bookingCount;
 
     public Service(int id, int categoryId, String serviceName, String description, double price, String img) {
         this.id = id;
@@ -16,6 +18,24 @@ public class Service {
         this.price = price;
         this.img = img;
     }
+
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public int getBookingCount() {
+        return bookingCount;
+    }
+
+    public void setBookingCount(int bookingCount) {
+        this.bookingCount = bookingCount;
+    }
+
+    // Getters and setters for the avg rating and booking count above
 
     public int getId() {
         return id;
