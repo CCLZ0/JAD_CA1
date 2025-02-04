@@ -2,7 +2,6 @@ package admin_servlet;
 
 import java.io.IOException;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,13 +12,13 @@ import dbaccess.User;
 import dbaccess.UserDAO;
 
 /**
- * Servlet implementation class EditUserServlet
+ * Servlet implementation class AddUserServlet
  */
-@WebServlet("/EditUserServlet")
-public class EditUserServlet extends HttpServlet {
+@WebServlet("/CreateUserServlet")
+public class CreateUserServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public EditUserServlet() {
+    public CreateUserServlet() {
         super();
     }
 
@@ -27,40 +26,33 @@ public class EditUserServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             // Retrieve form data
-        	int id = Integer.parseInt(request.getParameter("id"));
             String email = request.getParameter("email");
             String name = request.getParameter("name");
             String password = request.getParameter("password");
             String role = request.getParameter("role");
 
             // Debug statement to print the form data
-            System.out.println("Debug: id = " + id);
             System.out.println("Debug: email = " + email);
             System.out.println("Debug: name = " + name);
             System.out.println("Debug: password = " + password);
             System.out.println("Debug: role = " + role);
 
             // Create a new user object
-            User updatedUser = new User(id, email, name, password, role);
+            User newUser = new User(0, email, name, password, role);
 
-            // Access database to update the user
+            // Access database to add the new user
             UserDAO userDatabase = new UserDAO();
-            int rowsAffected = userDatabase.updateUser(id, updatedUser);
+            userDatabase.insertUser(newUser);
 
-            // Debug statement to print the result of the update operation
-            System.out.println("Debug: rowsAffected = " + rowsAffected);
-
-            if (rowsAffected > 0) {
-                // Redirect to GetAllUsersServlet to display the updated list of users
-                response.sendRedirect(request.getContextPath() + "/GetAllUsersServlet");
-            } else {
-                throw new Exception("Failed to update user");
-            }
+            // Redirect to manageUser.jsp
+            String url = "/admin/manageUser.jsp";
+            RequestDispatcher rd = request.getRequestDispatcher(url);
+            rd.forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("err", "DatabaseError");
-            String url = "/admin/editUser.jsp?id=" + request.getParameter("id");
+            String url = "/admin/manageUser.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
         }
@@ -71,6 +63,3 @@ public class EditUserServlet extends HttpServlet {
         doPost(request, response);
     }
 }
-
-
-

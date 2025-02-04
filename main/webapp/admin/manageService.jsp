@@ -68,47 +68,48 @@
         <!-- Display List of Services -->
         <%
         List<Service> services = (List<Service>) request.getAttribute("services");
-        if (services != null && !services.isEmpty()) {
+        if (services != null) {
+            if (!services.isEmpty()) {
         %>
-            <h3>Existing Services</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Category ID</th>
-                        <th>Service Name</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Image URL</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <%
-                for (Service service : services) {
-                %>
-                    <tr>
-                        <td><%= service.getId() %></td>
-                        <td><%= service.getCategoryId() %></td>
-                        <td><%= service.getServiceName() %></td>
-                        <td><%= service.getDescription() %></td>
-                        <td>$<%= service.getPrice() %></td>
-                        <td>$<%= service.getImg() %></td>
-                        <td>
-                            <a href="<%= request.getContextPath() %>/editService.jsp?id=<%= service.getId() %>" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="<%= request.getContextPath() %>/DeleteServiceServlet?id=<%= service.getId() %>" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-                <%
-                }
-                %>
-                </tbody>
-            </table>
-        <%
-        } else {
-        %>
-            <div class="alert alert-info">No services found.</div>
-        <%
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Category ID</th>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                    for (Service service : services) {
+                    %>
+                        <tr>
+                            <td><%= service.getId() %></td>
+                            <td><%= service.getCategoryId() %></td>
+                            <td><%= service.getServiceName() %></td>
+                            <td><%= service.getDescription() %></td>
+                            <td>$<%= service.getPrice() %></td>
+                            <td><%= service.getImg() %></td>
+                            <td>
+                                <a href="<%= request.getContextPath() %>/admin/editService.jsp?id=<%= service.getId() %>" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="<%= request.getContextPath() %>/DeleteServiceServlet?id=<%= service.getId() %>" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    <%
+                    }
+                    %>
+                    </tbody>
+                </table>
+            <%
+            } else {
+            %>
+                <div class="alert alert-info">No services found.</div>
+            <%
+            }
         }
         %>
     </div>
@@ -116,5 +117,3 @@
     <%@ include file="../web_elements/footer.html"%>
 </body>
 </html>
-
-

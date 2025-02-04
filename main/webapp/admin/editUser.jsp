@@ -47,12 +47,12 @@
                         <input type="text" id="name" name="name" value="<%= user.getName() %>" required />
                     </div>
                     <div>
-                        <label for="role">Role:</label>
-                        <input type="text" id="role" name="role" value="<%= user.getRole() %>" required />
-                    </div>
-                    <div>
                         <label for="password">Password:</label>
                         <input type="password" id="password" name="password" value="<%= user.getPassword() %>" required />
+                    </div>
+                    <div>
+                        <label for="role">Role:</label>
+                        <input type="text" id="role" name="role" value="<%= user.getRole() %>" required />
                     </div>
                     <div>
                         <input type="submit" value="Update User" class="btn btn-primary" />

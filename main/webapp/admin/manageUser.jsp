@@ -27,6 +27,32 @@
             </form>
         </div>
 
+        <!-- Form for Creating New User -->
+        <div class="box">
+            <h3>[POST] User::Add</h3>
+            <form action="<%=request.getContextPath()%>/CreateUserServlet" method="POST">
+            	<div>
+            	    <label for="email">email:</label>
+                    <input type="email" id="email" name="email" required />
+                </div>
+                <div>
+                    <label for="userName">Name:</label>
+                    <input type="text" id="name" name="name" required />
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required />
+                </div>
+                <div>
+                    <label for="role">Role:</label>
+                    <input type="text" id="role" name="role" required />
+                </div>
+                <div>
+                    <input type="submit" value="Create User" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+
         <!-- Display Error Message if User Not Found -->
         <%
         String error = (String) request.getAttribute("err");
@@ -38,46 +64,49 @@
         <!-- Display List of Users -->
         <%
         List<User> users = (List<User>) request.getAttribute("users");
-        if (users != null && !users.isEmpty()) {
+        if (users != null) {
+            if (!users.isEmpty()) {
         %>
-            <h3>Existing Users</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Email</th>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <%
-                for (User user : users) {
-                %>
-                    <tr>
-                        <td><%= user.getid() %></td>
-                        <td><%= user.getEmail() %></td>
-                        <td><%= user.getName() %></td>
-                        <td><%= user.getRole() %></td>
-                        <td>
-                            <a href="<%= request.getContextPath() %>/admin/editUser.jsp?id=<%= user.getid() %>" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="<%= request.getContextPath() %>/DeleteUserServlet?id=<%= user.getid() %>" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-                <%
-                }
-                %>
-                </tbody>
-            </table>
-        <%
-        } else {
-        %>
-            <div class="alert alert-info">No users found.</div>
-        <%
+                <h3>Existing Users</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                    for (User user : users) {
+                    %>
+                        <tr>
+                            <td><%= user.getId() %></td>
+                            <td><%= user.getEmail() %></td>
+                            <td><%= user.getName() %></td>
+                            <td><%= user.getRole() %></td>
+                            <td>
+                                <a href="<%= request.getContextPath() %>/admin/editUser.jsp?id=<%= user.getId() %>" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="<%= request.getContextPath() %>/DeleteUserServlet?id=<%= user.getId() %>" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    <%
+                    }
+                    %>
+                    </tbody>
+                </table>
+            <%
+            } else {
+            %>
+                <div class="alert alert-info">No users found.</div>
+            <%
+            }
         }
         %>
     </div>
 
+    <%@ include file="../web_elements/footer.html"%>
 </body>
 </html>
