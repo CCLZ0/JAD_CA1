@@ -6,16 +6,21 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import models.UserDAO;
+import jakarta.servlet.RequestDispatcher;
+import dbaccess.User;
+import dbaccess.UserDAO;
 
 @WebServlet("/RegisterServlet")
 public class RegisterServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
     private static final String LOGIN_PAGE = "/login/login.jsp";
+
 
     public RegisterServlet() {
         super();
     }
+
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -37,8 +42,11 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        UserDAO userDAO = new UserDAO();
-        boolean isRegistered = userDAO.registerUser(name, email, password);
+            // Validate form data
+            if (name == null || name.isEmpty() || email == null || email.isEmpty() || password == null || password.isEmpty()) {
+                response.sendRedirect(LOGIN_PAGE + "?error=101");
+                return;
+            }
 
         if (isRegistered) {
             request.getRequestDispatcher(LOGIN_PAGE + "?success=registrationComplete").forward(request, response);
@@ -47,3 +55,5 @@ public class RegisterServlet extends HttpServlet {
         }
     }
 }
+
+

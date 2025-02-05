@@ -13,25 +13,25 @@ import jakarta.servlet.RequestDispatcher;
 import dbaccess.ServiceDAO;
 
 /**
- * Servlet implementation class AverageRatingServlet
+ * Servlet implementation class BookingCountServlet
  */
-@WebServlet("/AverageRatingServlet")
-public class AverageRatingServlet extends HttpServlet {
+@WebServlet("/BookingCountServlet")
+public class BookingCountServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public AverageRatingServlet() {
+    public BookingCountServlet() {
         super();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         try {
-            // Access database to retrieve average rating details
+            // Access database to retrieve booking count details
             ServiceDAO serviceDatabase = new ServiceDAO();
-            List<Map<String, Object>> ratings = serviceDatabase.getAverageRating();
+            List<Map<String, Object>> bookings = serviceDatabase.getBookingCount();
 
-            request.setAttribute("servicesData", ratings);
-            request.setAttribute("showAverageRatings", true);
+            request.setAttribute("servicesData", bookings);
+            request.setAttribute("showBookingCounts", true);
 
             String url = "/admin/dashboard.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(url);
