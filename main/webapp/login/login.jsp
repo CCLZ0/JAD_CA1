@@ -76,10 +76,10 @@
 			</form>
 
 			<!-- Register Form -->
-			<form id="registerForm" class="form" action="registerUser.jsp"
+			<form id="registerForm" class="form" action="<%=request.getContextPath()%>/RegisterServlet"
 				method="POST">
 				<h2>Register</h2>
-				<input type="text" name="username2" placeholder="Username" required>
+				<input type="text" name="name2" placeholder="Username" required>
 				<input type="email" name="email2" placeholder="Email" required>
 				<input type="password" name="password2" placeholder="Password" required> 
 				<input type="password" name="confirmPassword2" placeholder="Confirm Password" required>
