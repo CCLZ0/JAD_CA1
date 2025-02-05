@@ -52,7 +52,7 @@
 		</div>
 	</div>
 
-	<%@ include file="../web_elements/footer.html"%>
+	<%@ include file="../web_elements/footer.jsp"%>
 	<script>
 	    contextPath = '<%= request.getContextPath() %>';
 	</script>

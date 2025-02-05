@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../web_elements/navbar.jsp" %>
-<%@ page import = "models.User" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,17 +12,10 @@
 </head>
 <body>
 
-
 <div class="container mt-5">
     <h1>Profile</h1>
 
     <%
-	    User user = (User) session.getAttribute("user");
-	    if (user == null) {
-	        response.sendRedirect(request.getContextPath() + "/login/login.jsp?error=notLoggedIn");
-	        return;
-	    }
-	    
         String successMessage = request.getParameter("success");
         String errorMessage = request.getParameter("error");
 
@@ -70,11 +62,11 @@
         <form action="<%= request.getContextPath() %>/EditProfileServlet" method="post">
             <div class="mb-3">
                 <label for="userName" class="form-label">Username</label>
-                <input type="text" class="form-control editable" id="userName" name="userName" value="<%= ((User) session.getAttribute("user")).getName() %>" disabled>
+                <input type="text" class="form-control editable" id="userName" name="userName" disabled>
             </div>
             <div class="mb-3">
                 <label for="userEmail" class="form-label">Email</label>
-                <input type="email" class="form-control editable" id="userEmail" name="userEmail" value="<%= ((User) session.getAttribute("user")).getEmail() %>" disabled>
+                <input type="email" class="form-control editable" id="userEmail" name="userEmail" disabled>
             </div>
             <button type="button" class="btn btn-primary" id="editButton" onclick="toggleEdit()">Edit Profile</button>
             <button type="submit" class="btn btn-success" id="saveButton" style="display: none;">Save Changes</button>
@@ -103,6 +95,6 @@
     </div>
 </div>
 <script src="${pageContext.request.contextPath}/js/profile.js"></script>
-<%@ include file="../web_elements/footer.html" %>
+<%@ include file="../web_elements/footer.jsp" %>
 </body>
 </html>

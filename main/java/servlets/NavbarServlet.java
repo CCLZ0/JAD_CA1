@@ -1,7 +1,7 @@
 package servlets;
 
 import models.NavbarDAO;
-import models.User;
+import models.NavbarData;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,36 +26,38 @@ public class NavbarServlet extends HttpServlet {
         System.out.println("NavbarServlet doGet method invoked");
 
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        Integer userId = (Integer) session.getAttribute("userId"); // Retrieve user ID from session
 
         NavbarDAO navbarDAO = new NavbarDAO();
-        ArrayList<String[]> categories = navbarDAO.getCategories();
-
-        if (categories == null) {
-            System.out.println("No categories found");
-        } else {
-            System.out.println("Categories found: " + categories.size());
-        }
+        ArrayList<String[]> categories = navbarDAO.getCategories(); // Fetch categories directly from DAO
 
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         JsonObjectBuilder jsonResponseBuilder = Json.createObjectBuilder();
 
-        if (user != null) {
-            System.out.println("User found: " + user.getName() + ", Role: " + user.getRole());
-            jsonResponseBuilder.add("userName", user.getName());
-            jsonResponseBuilder.add("userRole", user.getRole());
-        } else {
-            System.out.println("No user found in session");
+        if (userId != null) {
+            // Fetch user data using the user ID
+            NavbarData userData = navbarDAO.getUserData(userId);
+            if (userData != null) {
+                System.out.println("User found: " + userData.getName());
+                jsonResponseBuilder.add("userId", userId); // Add user ID to the response
+                jsonResponseBuilder.add("userName", userData.getName()); // Add user name to the response
+                jsonResponseBuilder.add("role", userData.getRole()); // Add user role to the response
+            } else {
+                System.out.println("No user data found for userId: " + userId);
+            }
         }
 
+        // Add categories to the JSON response
         JsonArrayBuilder categoriesArrayBuilder = Json.createArrayBuilder();
-        for (String[] category : categories) {
-            JsonObject categoryJson = Json.createObjectBuilder()
-                    .add("id", category[0])
-                    .add("name", category[1])
-                    .build();
-            categoriesArrayBuilder.add(categoryJson);
+        if (categories != null) {
+            for (String[] category : categories) {
+                JsonObject categoryJson = Json.createObjectBuilder()
+                        .add("id", category[0])
+                        .add("name", category[1])
+                        .build();
+                categoriesArrayBuilder.add(categoryJson);
+            }
         }
         jsonResponseBuilder.add("categories", categoriesArrayBuilder);
 
@@ -68,13 +70,9 @@ public class NavbarServlet extends HttpServlet {
         }
     }
 
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Forward to doGet to handle the request
+        doGet(request, response);
+    }
 }
+

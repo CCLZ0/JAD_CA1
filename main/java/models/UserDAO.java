@@ -141,4 +141,19 @@ public class UserDAO {
             }
         }
     }
+    
+    public String getUserRole(int userId) throws SQLException {
+        String role = null;
+        String query = "SELECT role FROM user WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    role = rs.getString("role");
+                }
+            }
+        }
+        return role;
+    }
 }

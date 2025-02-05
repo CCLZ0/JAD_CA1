@@ -2,7 +2,6 @@ package servlets;
 
 import models.CartDAO;
 import models.CartItem;
-import models.User;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
@@ -22,16 +21,30 @@ public class CartServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        HttpSession session = request.getSession(); // Use existing session, don't create new
 
-        if (user == null) {
+        if (session == null) {
+            System.out.println("DEBUG: Session is null.");
+            response.sendRedirect(request.getContextPath() + "/login/login.jsp?error=notLoggedIn");
+            return;
+        } else {
+            System.out.println("DEBUG: Session is not null.");
+        }
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        System.out.println("DEBUG: Retrieved userId from session: " + userId);
+
+        if (userId == null) {
+            System.out.println("DEBUG: Unauthorized access - No userId in session.");
             response.sendRedirect(request.getContextPath() + "/login/login.jsp?error=notLoggedIn");
             return;
         }
 
+        System.out.println("DEBUG: User is logged in with userId: " + userId);
+
+        // Fetch user's cart items
         CartDAO cartDAO = new CartDAO();
-        List<CartItem> cartItems = cartDAO.getCartItems(user.getUserid());
+        List<CartItem> cartItems = cartDAO.getCartItems(userId);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -53,10 +66,11 @@ public class CartServlet extends HttpServlet {
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        HttpSession session = request.getSession(false);
+        Integer userId = (session != null) ? (Integer) session.getAttribute("userId") : null;
 
-        if (user == null) {
+        if (userId == null) {
+            System.out.println("DEBUG: Unauthorized delete attempt - No userId in session.");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in");
             return;
         }
