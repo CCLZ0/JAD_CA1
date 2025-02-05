@@ -2,6 +2,9 @@ package servlets;
 
 import models.User;
 import models.UserDAO;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,41 +15,41 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-/**
- * Servlet implementation class EditProfileServlet
- */
 @WebServlet("/EditProfileServlet")
 public class EditProfileServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	 private static final String PROFILE_PAGE ="/user/profile.jsp";
-	 private static final String LOGIN_PAGE ="/login/login.jsp";
-	
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    private static final long serialVersionUID = 1L;
+    private static final String PROFILE_PAGE = "/user/profile.jsp";
+    private static final String LOGIN_PAGE = "/login/login.jsp";
+
     public EditProfileServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.getWriter().append("Served at: ").append(request.getContextPath());
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false); // Use existing session, don't create new
 
-        if (user == null) {
-            response.sendRedirect(request.getContextPath() + LOGIN_PAGE + "?error=notLoggedIn");
+        if (session == null) {
+            System.out.println("DEBUG: Session is null.");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\": \"User not logged in\"}");
+            return;
+        }
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        System.out.println("DEBUG: Retrieved userId from session: " + userId);
+
+        if (userId == null) {
+            System.out.println("DEBUG: Unauthorized access - No userId in session.");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\": \"User not logged in\"}");
             return;
         }
 
@@ -58,18 +61,20 @@ public class EditProfileServlet extends HttpServlet {
             return;
         }
 
-        user.setName(userName);
-        user.setEmail(userEmail);
-
         UserDAO userDAO = new UserDAO();
         try {
-            userDAO.updateUser(user);
-            session.setAttribute("user", user); // Update session with new user details
-            request.getRequestDispatcher(PROFILE_PAGE + "?success=profileUpdated").forward(request, response);
+            User user = userDAO.getUserDetails(userId.toString());
+            if (user != null) {
+                user.setName(userName);
+                user.setEmail(userEmail);
+                userDAO.updateUser(user);
+                request.getRequestDispatcher(PROFILE_PAGE + "?success=profileUpdated").forward(request, response);
+            } else {
+                request.getRequestDispatcher(PROFILE_PAGE + "?error=updateFailed").forward(request, response);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             request.getRequestDispatcher(PROFILE_PAGE + "?error=updateFailed").forward(request, response);
         }
     }
-
 }

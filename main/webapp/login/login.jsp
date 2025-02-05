@@ -76,7 +76,7 @@
 			</form>
 
 			<!-- Register Form -->
-			<form id="registerForm" class="form" action="registerUser.jsp"
+			<form id="registerForm" class="form" action="<%=request.getContextPath()%>/RegisterServlet"
 				method="POST">
 				<h2>Register</h2>
 				<input type="text" name="username2" placeholder="Username" required>
@@ -89,7 +89,7 @@
 		</div>
 	</div>
 	<script src="${pageContext.request.contextPath}/js/login.js"></script>
-	<%@ include file="../web_elements/footer.html" %>
+	<%@ include file="../web_elements/footer.jsp" %>
 </body>
 </html>
 

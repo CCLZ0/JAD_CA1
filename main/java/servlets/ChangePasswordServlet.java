@@ -14,40 +14,40 @@ import java.sql.SQLException;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-/**
- * Servlet implementation class ChangePasswordServlet
- */
 @WebServlet("/ChangePasswordServlet")
 public class ChangePasswordServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private static final String PROFILE_PAGE ="/user/profile.jsp";
-	private static final String LOGIN_PAGE ="/login/login.jsp";
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    private static final long serialVersionUID = 1L;
+    private static final String PROFILE_PAGE = "/user/profile.jsp";
+
     public ChangePasswordServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.getWriter().append("Served at: ").append(request.getContextPath());
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false); // Use existing session, don't create new
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        if (session == null) {
+            System.out.println("DEBUG: Session is null.");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\": \"User not logged in\"}");
+            return;
+        }
 
-        if (user == null) {
-            response.sendRedirect(request.getContextPath() + LOGIN_PAGE + "?error=notLoggedIn");
+        Integer userId = (Integer) session.getAttribute("userId");
+        System.out.println("DEBUG: Retrieved userId from session: " + userId);
+
+        if (userId == null) {
+            System.out.println("DEBUG: Unauthorized access - No userId in session.");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\": \"User not logged in\"}");
             return;
         }
 
@@ -67,12 +67,12 @@ public class ChangePasswordServlet extends HttpServlet {
 
         UserDAO userDAO = new UserDAO();
         try {
-            User userDetails = userDAO.getUserDetails(String.valueOf(user.getUserid()));
+            User userDetails = userDAO.getUserDetails(userId.toString());
             if (userDetails != null && userDetails.getPassword() != null) {
                 System.out.println("Stored password hash: " + userDetails.getPassword());
                 System.out.println("Current password: " + currentPassword);
                 if (BCrypt.checkpw(currentPassword, userDetails.getPassword())) {
-                    userDAO.updatePassword(user.getUserid(), newPassword);
+                    userDAO.updatePassword(userId, newPassword);
                     request.getRequestDispatcher(PROFILE_PAGE + "?success=passwordUpdated").forward(request, response);
                 } else {
                     request.getRequestDispatcher(PROFILE_PAGE + "?error=incorrectPassword").forward(request, response);

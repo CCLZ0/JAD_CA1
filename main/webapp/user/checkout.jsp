@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html>
@@ -81,6 +81,6 @@
         <a href="cart.jsp" class="btn btn-primary">Return to Cart</a>
     <% } %>
 </div>
-<%@ include file="../web_elements/footer.html"%>
+<%@ include file="../web_elements/footer.jsp"%>
 </body>
-</html>
+</html> --%>

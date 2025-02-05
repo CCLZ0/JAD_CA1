@@ -2,7 +2,6 @@ package servlets;
 
 import models.Booking;
 import models.BookingHistoryDAO;
-import models.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,23 +23,45 @@ public class BookingHistoryServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        HttpSession session = request.getSession(); // Use existing session, don't create new
 
-        if (user == null) {
+        if (session == null) {
+            System.out.println("DEBUG: Session is null.");
             response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            PrintWriter out = response.getWriter();
             JsonObject jsonResponse = Json.createObjectBuilder()
-                    .add("error", "Unauthorized access. Please log in.")
+                    .add("error", "User not logged in")
                     .build();
-            try (JsonWriter jsonWriter = Json.createWriter(response.getWriter())) {
-                jsonWriter.write(jsonResponse);
-            }
+            out.print(jsonResponse.toString());
+            out.flush();
+            return;
+        } else {
+            System.out.println("DEBUG: Session is not null.");
+        }
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        System.out.println("DEBUG: Retrieved userId from session: " + userId);
+
+        if (userId == null) {
+            System.out.println("DEBUG: Unauthorized access - No userId in session.");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            PrintWriter out = response.getWriter();
+            JsonObject jsonResponse = Json.createObjectBuilder()
+                    .add("error", "User not logged in")
+                    .build();
+            out.print(jsonResponse.toString());
+            out.flush();
             return;
         }
 
+        System.out.println("DEBUG: User is logged in with userId: " + userId);
+
         BookingHistoryDAO bookingHistoryDAO = new BookingHistoryDAO();
-        List<Booking> bookingHistory = bookingHistoryDAO.getBookingHistory(user.getUserid());
+        List<Booking> bookingHistory = bookingHistoryDAO.getBookingHistory(userId);
 
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
@@ -67,13 +88,7 @@ public class BookingHistoryServlet extends HttpServlet {
         }
     }
 
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
 }

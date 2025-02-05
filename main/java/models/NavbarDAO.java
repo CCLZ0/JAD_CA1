@@ -8,7 +8,7 @@ import dbaccess.DBConnection;
 
 public class NavbarDAO {
 
-	public ArrayList<String[]> getCategories() {
+    public ArrayList<String[]> getCategories() {
         ArrayList<String[]> categories = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection()) {
             String query = "SELECT id, category_name FROM service_category";
@@ -25,6 +25,7 @@ public class NavbarDAO {
         }
         return categories;
     }
+
     public NavbarData getUserData(int userId) {
         NavbarData userData = null;
         String query = "SELECT name, role FROM user WHERE id = ?";

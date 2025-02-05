@@ -6,8 +6,8 @@
 <title>Feedback</title>
 <link href="https://fonts.googleapis.com/css2?family=Recursive&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../css/style.css">
-<link rel="stylesheet" href="../css/rating.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/rating.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
@@ -70,8 +70,8 @@
         <button type="submit" class="btn feedbackBtn">Submit Feedback</button>
     </form>
 </div>
-<%@ include file="../web_elements/footer.html"%>
-<script src="../js/rating.js"></script>
-<script src="../js/loadFeedback.js"></script>
+<%@ include file="../web_elements/footer.jsp"%>
+<script src="${pageContext.request.contextPath}/js/rating.js"></script>
+<script src="${pageContext.request.contextPath}/js/loadFeedback.js"></script>
 </body>
 </html>

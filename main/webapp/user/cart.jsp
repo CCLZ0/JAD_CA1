@@ -3,7 +3,7 @@
 <%@ page import="models.User" %>
 <%@ page import="java.util.List"%>
 <%@ include file="../web_elements/navbar.jsp"%>
-<%
+<%-- <%
     User user = (User) session.getAttribute("user");
 
     if (user == null) {
@@ -12,7 +12,7 @@
     }
 
     /* List<CartItem> cartItems = (List<CartItem>) request.getAttribute("cartItems"); */
-%>
+%> --%>
 <!DOCTYPE html>
 <html>
 <head>

@@ -38,7 +38,7 @@
 	        </tbody>
 	    </table>
 	</div>
-	<%@ include file="../web_elements/footer.html"%>
+	<%@ include file="../web_elements/footer.jsp"%>
 <%-- 	<script src="${pageContext.request.contextPath}/js/loadNavbar.js"></script> --%>
 	<script src="${pageContext.request.contextPath}/js/loadBookingHist.js"></script>
 </body>

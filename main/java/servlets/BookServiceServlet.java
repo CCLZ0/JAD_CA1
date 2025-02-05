@@ -1,7 +1,6 @@
 package servlets;
 
 import models.BookingDAO;
-import models.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,9 +17,10 @@ public class BookServiceServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
 
-        if (user == null) {
+        Integer userId = (Integer) session.getAttribute("userId");
+
+        if (userId == null) {
             response.sendRedirect(request.getContextPath() + "/login/login.jsp?error=notLoggedIn");
             return;
         }
@@ -35,7 +35,7 @@ public class BookServiceServlet extends HttpServlet {
             try {
                 int serviceId = Integer.parseInt(serviceIdStr);
                 BookingDAO bookingDAO = new BookingDAO();
-                boolean isAdded = bookingDAO.addServiceToCart(user.getUserid(), serviceId, bookingTime, remarks);
+                boolean isAdded = bookingDAO.addServiceToCart(userId, serviceId, bookingTime, remarks);
 
                 if (isAdded) {
                     response.sendRedirect(request.getContextPath() + "/user/cart.jsp?success=Service added to cart successfully!");
@@ -51,10 +51,16 @@ public class BookServiceServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        HttpSession session = request.getSession(false); // Use existing session, don't create new
 
-        if (user == null) {
+        if (session == null) {
+            response.sendRedirect(request.getContextPath() + "/login/login.jsp?error=notLoggedIn");
+            return;
+        }
+
+        Integer userId = (Integer) session.getAttribute("userId");
+
+        if (userId == null) {
             response.sendRedirect(request.getContextPath() + "/login/login.jsp?error=notLoggedIn");
             return;
         }

@@ -82,6 +82,6 @@
     %>
    
 </div>
- <%@ include file="../web_elements/footer.html"%>
+ <%@ include file="../web_elements/footer.jsp"%>
 </body>
 </html>
