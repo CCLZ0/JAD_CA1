@@ -14,7 +14,7 @@ import com.shinepro.admin.dbaccess.User;
 import com.shinepro.admin.dbaccess.UserDAO;
 
 @RestController
-@RequestMapping("/user") // Link: http://localhost:8081/admin/user/<path>
+@RequestMapping("/user") // Link: http://localhost:8081/user/<path>
 public class UserController {
 
 	@RequestMapping(method = RequestMethod.GET, path = "/getUser/{id}")
@@ -55,11 +55,11 @@ public class UserController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, path = "/updateUser/{id}")
-	public int updateUser(@PathVariable int uid, @RequestBody User user) {
+	public int updateUser(@PathVariable int id, @RequestBody User user) {
 		int rec = 0;
 		try {
 			UserDAO db = new UserDAO();
-			rec = db.updateUser(uid, user);
+			rec = db.updateUser(id, user);
 			System.out.print("...in UserController - done updating user: " + rec);
 		} catch (Exception e) {
 			System.out.print("Error: " + e.toString());

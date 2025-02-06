@@ -2,7 +2,6 @@ package admin_servlet;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,37 +9,34 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.RequestDispatcher;
-import dbaccess.ServiceDAO;
+import models.Booking;
+import models.BookingHistoryDAO;
 
-/**
- * Servlet implementation class AverageRatingServlet
- */
-@WebServlet("/AverageRatingServlet")
-public class AverageRatingServlet extends HttpServlet {
+@WebServlet("/GetAllBookingsServlet")
+public class GetAllBookingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public AverageRatingServlet() {
+    public GetAllBookingsServlet() {
         super();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         try {
-            // Access database to retrieve average rating details
-            ServiceDAO serviceDatabase = new ServiceDAO();
-            List<Map<String, Object>> ratings = serviceDatabase.getAverageRating();
+            // Access database to retrieve booking details
+            BookingHistoryDAO bookingHistoryDAO = new BookingHistoryDAO();
+            List<Booking> bookings = bookingHistoryDAO.getAllBookings();
 
-            request.setAttribute("servicesData", ratings);
-            request.setAttribute("showAverageRatings", true);
+            request.setAttribute("bookings", bookings);
 
-            String url = "/admin/manageService.jsp";
+            String url = "/admin/manageBooking.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("err", "DatabaseError");
-            String url = "/admin/manageService.jsp";
+            String url = "/admin/manageBooking.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
         }

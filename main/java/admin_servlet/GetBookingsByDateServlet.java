@@ -2,7 +2,6 @@ package admin_servlet;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,37 +9,38 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.RequestDispatcher;
-import dbaccess.ServiceDAO;
+import models.Booking;
+import models.BookingHistoryDAO;
 
-/**
- * Servlet implementation class AverageRatingServlet
- */
-@WebServlet("/AverageRatingServlet")
-public class AverageRatingServlet extends HttpServlet {
+@WebServlet("/GetBookingsByDateServlet")
+public class GetBookingsByDateServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public AverageRatingServlet() {
+    public GetBookingsByDateServlet() {
         super();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         try {
-            // Access database to retrieve average rating details
-            ServiceDAO serviceDatabase = new ServiceDAO();
-            List<Map<String, Object>> ratings = serviceDatabase.getAverageRating();
+            // Retrieve start and end dates from request
+            String startDate = request.getParameter("startDate");
+            String endDate = request.getParameter("endDate");
 
-            request.setAttribute("servicesData", ratings);
-            request.setAttribute("showAverageRatings", true);
+            // Access database to retrieve booking details within the specified date range
+            BookingHistoryDAO bookingHistoryDAO = new BookingHistoryDAO();
+            List<Booking> bookings = bookingHistoryDAO.getBookingsByDateRange(startDate, endDate);
 
-            String url = "/admin/manageService.jsp";
+            request.setAttribute("bookings", bookings);
+
+            String url = "/admin/manageBooking.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("err", "DatabaseError");
-            String url = "/admin/manageService.jsp";
+            String url = "/admin/manageBooking.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
         }

@@ -8,6 +8,20 @@ public class Booking {
     private String statusName;
     private int statusId;
     private int feedbackId;
+    
+    public Booking(int id, String serviceName, String bookingDate, String remarks, String statusName,  int statusId, int feedbackId) {
+        this.id = id;
+        this.serviceName = serviceName;
+        this.bookingDate = bookingDate;
+        this.remarks = remarks;
+        this.statusName = statusName;
+        this.statusId = statusId;
+        this.feedbackId = feedbackId;
+    }
+    
+    public Booking() {
+    	
+    }
 
     // Getters and setters
     public int getId() {

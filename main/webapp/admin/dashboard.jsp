@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Map"%>
+<%@ include file="../auth/checkAdmin.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -59,6 +60,55 @@
 					type="submit" value="Show Booking Counts" class="btn btn-primary" />
 			</form>
 		</div>
+
+		<!-- Button to Show Top 10 Customers by Booking Value -->
+		<div class="box">
+			<h3>Top 10 Customers by Booking Value</h3>
+			<form action="<%=request.getContextPath()%>/GetTopCustomersServlet"
+				method="get">
+				<input type="hidden" name="action" value="Get Top Customers"
+					class="btn btn-primary" /> <input type="submit"
+					value="Show Booking Value" class="btn btn-primary" />
+			</form>
+		</div>
+
+		<!-- Display List of Top 10 Customers by Booking Value -->
+		<%
+		List<Map<String, Object>> topCustomers = (List<Map<String, Object>>) request.getAttribute("topCustomers");
+		if (topCustomers != null) {
+		%>
+		<div class="box mt-4">
+			<h3>Top 10 Customers by Booking Value</h3>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Customer ID</th>
+						<th>Customer Name</th>
+						<th>Total Booking Value</th>
+					</tr>
+				</thead>
+				<tbody>
+					<%
+					for (Map<String, Object> customer : topCustomers) {
+					%>
+					<tr>
+						<td><%=customer.get("customerId")%></td>
+						<td><%=customer.get("customerName")%></td>
+						<td>$<%=customer.get("totalBookingValue")%></td>
+					</tr>
+					<%
+					}
+					%>
+				</tbody>
+			</table>
+		</div>
+		<%
+		} else if (request.getAttribute("topCustomers") != null) {
+		%>
+		<div class="alert alert-info mt-4">No top customers found.</div>
+		<%
+		}
+		%>
 
 		<!-- Display List of Services with Average Rating -->
 		<%
@@ -192,3 +242,4 @@
 	<%@ include file="../web_elements/footer.html"%>
 </body>
 </html>
+
