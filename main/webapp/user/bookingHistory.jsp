@@ -1,13 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../web_elements/navbar.jsp" %>
-<%-- <%@ page import="models.User" %>
-<%
-    User user = (User) session.getAttribute("user");
-    if (user == null) {
-        response.sendRedirect("../login/login.jsp?error=unauthorized");
-        return;
-    }
-%> --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,7 +31,6 @@
 	    </table>
 	</div>
 	<%@ include file="../web_elements/footer.jsp"%>
-<%-- 	<script src="${pageContext.request.contextPath}/js/loadNavbar.js"></script> --%>
 	<script src="${pageContext.request.contextPath}/js/loadBookingHist.js"></script>
 </body>
 </html>

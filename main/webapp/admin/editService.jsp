@@ -74,6 +74,6 @@
         <button class="btn btn-secondary mt-3" onclick="window.location.href='<%=request.getContextPath()%>/admin/manageService.jsp';">Back</button>
     </div>
 
-    <%@ include file="../web_elements/footer.html"%>
+    <%@ include file="../web_elements/footer.jsp"%>
 </body>
 </html>
