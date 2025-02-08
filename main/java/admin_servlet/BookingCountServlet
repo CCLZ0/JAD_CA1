@@ -1,0 +1,70 @@
+package admin_servlet;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@WebServlet("/admin/bookingCounts")
+public class BookingCountServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    public BookingCountServlet() {
+        super();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String baseUrl = "http://localhost:8081/service";
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            // Get booking counts
+            List<Map<String, Object>> bookingCounts = getDataFromEndpoint(baseUrl + "/getBookingCount", objectMapper);
+            System.out.println("Booking Counts: " + bookingCounts);
+            request.setAttribute("bookingCounts", bookingCounts);
+
+            // Forward to dashboard.jsp
+            request.getRequestDispatcher("/admin/dashboard.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error fetching data: " + e.getMessage());
+        }
+    }
+
+    private List<Map<String, Object>> getDataFromEndpoint(String endpointUrl, ObjectMapper objectMapper) throws IOException {
+        URL url = new URL(endpointUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+
+        conn.disconnect();
+        System.out.println("Response from " + endpointUrl + ": " + sb.toString());
+        return objectMapper.readValue(sb.toString(), List.class);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+}

@@ -3,13 +3,13 @@
 <%@ include file="../web_elements/navbar.jsp" %>
 
 <%
- /*    User user = (User) session.getAttribute("user");
-
-    if (user == null) {
-        response.sendRedirect(request.getContextPath() + "/login/login.jsp?error=notLoggedIn");
-        return;
-    } */
-
+	Integer userId = (Integer) session.getAttribute("userId");
+	if (userId == null) {
+	    // Redirect to login page if not logged in
+	    response.sendRedirect(request.getContextPath() + "/login/login.jsp?error=notLoggedIn");
+	    return;
+	}
+	
     String errorMessage = request.getParameter("error");
     String serviceId = request.getParameter("serviceId"); // Get serviceId from URL parameter
 %>
