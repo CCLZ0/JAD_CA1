@@ -1,60 +1,61 @@
 package servlets;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.stripe.param.PaymentIntentCreateParams;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.CheckoutDAO;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/PaymentServlet")
 public class PaymentServlet extends HttpServlet {
-
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
+    public void init() throws ServletException {
+        super.init();
+        Stripe.apiKey = "sk_test_51QpuavPxDBHWbWwkxTAbdV9tU3b03m8EX9ZJMrIKgbJNmynFQIc4yGLKt57wLCss3sk8gUmIROkUiHwLQw8K1Fo800CIpZlvJv";
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Stripe.apiKey = "sk_test_51QpuavPxDBHWbWwkxTAbdV9tU3b03m8EX9ZJMrIKgbJNmynFQIc4yGLKt57wLCss3sk8gUmIROkUiHwLQw8K1Fo800CIpZlvJv"; // Replace with actual secret key
-
-        String paymentIntentId = request.getParameter("paymentIntentId");
-        String[] cartItemIds = request.getParameterValues("cartItemIds");
-        Integer userId = (Integer) request.getSession().getAttribute("userId");
-
-        if (paymentIntentId == null || cartItemIds == null || userId == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters.");
+        Integer totalAmount = (Integer) request.getSession().getAttribute("totalAmount");
+        if (totalAmount == null) {
+            response.getWriter().write("{\"error\":\"Session has expired or total amount is missing.\"}");
             return;
         }
 
         try {
-            // Retrieve the PaymentIntent from Stripe
-            PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
+            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                .setAmount((long) totalAmount * 100) // Ensure this is in cents
+                .setCurrency("usd")
+                .build();
 
-            if ("succeeded".equals(paymentIntent.getStatus())) {
-                // Process checkout in database
-                CheckoutDAO checkoutDAO = new CheckoutDAO();
-                boolean success = checkoutDAO.checkout(userId, cartItemIds);
+            PaymentIntent intent = PaymentIntent.create(params);
+            String clientSecret = intent.getClientSecret();
 
-                if (success) {
-                    response.setContentType("application/json");
-                    JsonObject jsonResponse = new JsonObject();
-                    jsonResponse.addProperty("message", "Payment successful. Booking confirmed.");
-                    response.getWriter().write(jsonResponse.toString());
-                } else {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update booking.");
-                }
-            } else {
-                response.sendError(HttpServletResponse.SC_PAYMENT_REQUIRED, "Payment not successful.");
-            }
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"clientSecret\": \"" + clientSecret + "\"}");
         } catch (StripeException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Stripe error: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"Stripe error: " + e.getMessage() + "\"}");
         }
     }
 }

@@ -61,35 +61,52 @@ function toggleAllCheckboxes(selectAll) {
 
 function checkout() {
     const selectedCheckboxes = document.querySelectorAll(".cart-checkbox:checked");
-    const selectedItems = selectedCheckboxes.length > 0
-        ? Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.dataset.id))
-        : Array.from(document.querySelectorAll(".cart-checkbox")).map(checkbox => parseInt(checkbox.dataset.id));
+    const selectedItems = Array.from(selectedCheckboxes).map(checkbox => parseInt(checkbox.dataset.id, 10));
+
+    console.log("🛒 Selected cart item IDs:", selectedItems); // Debugging
 
     if (selectedItems.length === 0) {
-        alert("No items in the cart to checkout.");
+        console.log("Checkout Error: No items selected for checkout.");
+        alert("No items selected for checkout.");
         return;
     }
+
+    console.log("Sending POST request to CheckoutServlet with items:", selectedItems);
 
     fetch(contextPath + "/CheckoutServlet", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify({ cartItemIds: selectedItems })
+        body: JSON.stringify({
+            cartItemIds: selectedItems,
+            action: "startCheckout"
+        })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.href = contextPath + "/user/checkout.jsp"; // Redirect after backend processing
+    .then(response => {
+        console.log("Received response from CheckoutServlet:", response.status);
+        if (response.ok) {
+            return response.json(); // Only parse as JSON if the response is OK
         } else {
-            alert("Error during checkout. Please try again.");
+            throw new Error('Server returned non-OK status: ' + response.status);
+        }
+    })
+    .then(data => {
+        console.log("Response data from CheckoutServlet:", data);
+        if (data.success) {
+            console.log("✅ Checkout successful, redirecting...");
+            window.location.href = `${contextPath}/user/checkout.jsp?totalAmount=${data.totalAmount}`;
+        } else {
+            console.log("Checkout Error with data received:", data);
+            alert(data.message || "Error preparing checkout. Please try again.");
         }
     })
     .catch(error => {
-        console.error("Checkout Error:", error);
-        alert("An error occurred. Please try again.");
+        console.error("❌ Checkout Error:", error);
+        alert("Checkout failed. Please check the console for more details.");
     });
 }
+
 
 function deleteCartItem(cartItemId) {
     fetch(`${contextPath}/CartServlet?id=${cartItemId}`, { method: "DELETE" })
