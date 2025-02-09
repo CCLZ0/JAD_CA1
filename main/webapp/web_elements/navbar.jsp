@@ -34,7 +34,7 @@
     </nav>
 </header>
 	<script>
-		const contextPath = '<%= request.getContextPath() %>';
+		var contextPath = '<%= request.getContextPath() %>';
         console.log(contextPath);
     </script>
 	<script src="${pageContext.request.contextPath}/js/loadNavbar.js"></script>

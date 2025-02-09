@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class CheckoutDAO {
 
@@ -76,7 +77,7 @@ public class CheckoutDAO {
     }
 
     // New method to calculate total amount
-    public int getTotalAmount(String[] cartItemIds) {
+    public int getTotalAmount(List<Integer> cartItemIds) {
         int totalAmount = 0;
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -88,10 +89,10 @@ public class CheckoutDAO {
                 throw new SQLException("Unable to establish a database connection.");
             }
 
-            StringBuilder query = new StringBuilder("SELECT price FROM cart WHERE id IN (");
-            for (int i = 0; i < cartItemIds.length; i++) {
+            StringBuilder query = new StringBuilder("SELECT SUM(price) AS total FROM cart WHERE id IN (");
+            for (int i = 0; i < cartItemIds.size(); i++) {
                 query.append("?");
-                if (i < cartItemIds.length - 1) {
+                if (i < cartItemIds.size() - 1) {
                     query.append(", ");
                 }
             }
@@ -99,15 +100,14 @@ public class CheckoutDAO {
 
             pstmt = conn.prepareStatement(query.toString());
 
-            for (int i = 0; i < cartItemIds.length; i++) {
-                pstmt.setInt(i + 1, Integer.parseInt(cartItemIds[i]));
+            for (int i = 0; i < cartItemIds.size(); i++) {
+                pstmt.setInt(i + 1, cartItemIds.get(i));
             }
 
             rs = pstmt.executeQuery();
-            while (rs.next()) {
-                totalAmount += rs.getDouble("price") * 100; // Convert to cents for Stripe
+            if (rs.next()) {
+                totalAmount = rs.getInt("total");
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -122,8 +122,8 @@ public class CheckoutDAO {
 
         return totalAmount;
     }
-    
-    public boolean completeCheckout(int userId, String[] cartItemIds) {
+
+    public boolean completeCheckout(int userId, List<Integer> cartItemIds) {
         Connection conn = null;
         PreparedStatement moveToBooking = null;
         PreparedStatement deleteFromCart = null;
@@ -133,22 +133,22 @@ public class CheckoutDAO {
             conn.setAutoCommit(false);
 
             // Move items to Booking Table
-            String insertBookingSQL = "INSERT INTO Booking (user_id, service_name, booking_time, price, remarks) "
-                                    + "SELECT user_id, service_name, booking_time, price, remarks FROM Cart WHERE id = ?";
+            String insertBookingSQL = "INSERT INTO booking (user_id, service_name, booking_time, price, remarks) "
+                                    + "SELECT user_id, service_name, booking_time, price, remarks FROM cart WHERE id = ?";
             moveToBooking = conn.prepareStatement(insertBookingSQL);
 
-            for (String id : cartItemIds) {
-                moveToBooking.setInt(1, Integer.parseInt(id));
+            for (Integer id : cartItemIds) {
+                moveToBooking.setInt(1, id);
                 moveToBooking.addBatch();
             }
             moveToBooking.executeBatch();
 
             // Delete items from Cart
-            String deleteCartSQL = "DELETE FROM Cart WHERE id = ?";
+            String deleteCartSQL = "DELETE FROM cart WHERE id = ?";
             deleteFromCart = conn.prepareStatement(deleteCartSQL);
 
-            for (String id : cartItemIds) {
-                deleteFromCart.setInt(1, Integer.parseInt(id));
+            for (Integer id : cartItemIds) {
+                deleteFromCart.setInt(1, id);
                 deleteFromCart.addBatch();
             }
             deleteFromCart.executeBatch();

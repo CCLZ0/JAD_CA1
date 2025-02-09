@@ -1,88 +1,67 @@
 package servlets;
 
-import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentIntent;
-import com.stripe.param.PaymentIntentCreateParams;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import models.CartDAO;
 import models.CheckoutDAO;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebServlet("/CheckoutServlet")
 public class CheckoutServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        if ("finalizeCheckout".equals(action)) {
-            String token = request.getParameter("token"); // Stripe payment token
-            HttpSession session = request.getSession();
-            String[] cartItemIdsStr = request.getParameterValues("cartItemIds");
-
-            if (cartItemIdsStr == null || cartItemIdsStr.length == 0) {
-                response.sendRedirect(request.getContextPath() + "/user/checkout.jsp?error=NoItems");
-                return;
-            }
-
-            List<Integer> cartItemIds = Arrays.stream(cartItemIdsStr)
-                                              .map(Integer::parseInt)
-                                              .collect(Collectors.toList());
-
-            try {
-                CartDAO cartDAO = new CartDAO();
-                double totalAmount = cartDAO.calculateTotalAmount(cartItemIds);
-
-                boolean paymentSuccess = processStripePayment(token, totalAmount);
-
-                if (paymentSuccess) {
-                    int userId = (Integer) session.getAttribute("userId");
-                    CheckoutDAO checkoutDAO = new CheckoutDAO();
-                    boolean success = checkoutDAO.completeCheckout(userId, cartItemIdsStr);
-
-                    if (success) {
-                        session.removeAttribute("cartItemIds"); // Clear session after checkout
-                        response.sendRedirect(request.getContextPath() + "/user/bookingHistory.jsp");
-                    } else {
-                        response.sendRedirect(request.getContextPath() + "/user/checkout.jsp?error=CheckoutFailed");
-                    }
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/user/checkout.jsp?error=PaymentFailed");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.sendRedirect(request.getContextPath() + "/user/checkout.jsp?error=ServerError");
+        // Read JSON from the request body
+        StringBuilder jsonBody = new StringBuilder();
+        String line;
+        try (BufferedReader reader = request.getReader()) {
+            while ((line = reader.readLine()) != null) {
+                jsonBody.append(line);
             }
         }
-    }
 
-    private boolean processStripePayment(String token, double amount) {
+        Gson gson = new Gson();
+        JsonObject jsonRequest = gson.fromJson(jsonBody.toString(), JsonObject.class);
+        JsonArray cartItemsArray = jsonRequest.getAsJsonArray("cartItemIds");
+        
+        if (cartItemsArray == null || cartItemsArray.size() == 0) {
+            response.getWriter().write("{\"error\":\"No items selected for checkout.\"}");
+            return;
+        }
+
+        List<Integer> cartItemIds = new ArrayList<>();
+        cartItemsArray.forEach(item -> cartItemIds.add(item.getAsInt()));
+
+        HttpSession session = request.getSession();
         try {
-            Stripe.apiKey = "sk_test_51QpuavPxDBHWbWwkxTAbdV9tU3b03m8EX9ZJMrIKgbJNmynFQIc4yGLKt57wLCss3sk8gUmIROkUiHwLQw8K1Fo800CIpZlvJv"; // Replace with real Stripe secret key
+            CheckoutDAO checkoutDAO = new CheckoutDAO();
+            int totalAmount = checkoutDAO.getTotalAmount(cartItemIds);
 
-            PaymentIntentCreateParams params = 
-                PaymentIntentCreateParams.builder()
-                    .setAmount((long) (amount * 100)) // Convert amount to cents
-                    .setCurrency("sgd	")
-                    .setPaymentMethod(token)
-                    .setConfirm(true)
-                    .build();
+            // Store cart item IDs and total amount in the session
+            session.setAttribute("cartItemIds", cartItemIds);
+            session.setAttribute("totalAmount", totalAmount);
 
-            PaymentIntent intent = PaymentIntent.create(params);
-            return "succeeded".equals(intent.getStatus());
-        } catch (StripeException e) {
-            e.printStackTrace();
-            return false;
+            // Send success response with total amount
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("success", true);
+            jsonResponse.addProperty("totalAmount", totalAmount);
+            response.getWriter().write(gson.toJson(jsonResponse));
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"Server error: " + e.getMessage() + "\"}");
         }
     }
 }

@@ -42,6 +42,41 @@ public class CartDAO {
 
         return cartItems;
     }
+    
+    public CartItem getCartItemById(int cartItemId) {
+        CartItem cartItem = null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            String query = "SELECT * FROM cart WHERE id = ?";
+            pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, cartItemId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                cartItem = new CartItem();
+                cartItem.setId(rs.getInt("id"));
+                cartItem.setServiceName(rs.getString("service_name"));
+                cartItem.setPrice(rs.getDouble("price"));
+                // Add other fields as necessary
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return cartItem;
+    }
 
     // ✅ Method to calculate total price for selected cart items
     public double calculateTotalAmount(List<Integer> cartItemIds) {
@@ -87,24 +122,28 @@ public class CartDAO {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false); // Start transaction
 
-            // Insert into booking table
+            // Prepare the SQL for inserting into the booking table
             String insertQuery = "INSERT INTO booking (user_id, service_id, booking_time, price, remarks) " +
-                                 "SELECT user_id, service_id, booking_time, price, remarks FROM cart WHERE id IN (" +
-                                 String.join(",", cartItemIds.stream().map(id -> "?").toArray(String[]::new)) + ")";
+                                 "SELECT user_id, service_id, booking_time, price, remarks FROM cart WHERE id = ?";
             pstmtInsert = conn.prepareStatement(insertQuery);
-            for (int i = 0; i < cartItemIds.size(); i++) {
-                pstmtInsert.setInt(i + 1, cartItemIds.get(i));
-            }
-            pstmtInsert.executeUpdate();
 
-            // Delete from cart table
-            String deleteQuery = "DELETE FROM cart WHERE id IN (" +
-                                 String.join(",", cartItemIds.stream().map(id -> "?").toArray(String[]::new)) + ")";
-            pstmtDelete = conn.prepareStatement(deleteQuery);
-            for (int i = 0; i < cartItemIds.size(); i++) {
-                pstmtDelete.setInt(i + 1, cartItemIds.get(i));
+            for (Integer cartId : cartItemIds) {
+                pstmtInsert.setInt(1, cartId);
+                pstmtInsert.addBatch(); // Add to batch
             }
-            pstmtDelete.executeUpdate();
+
+            pstmtInsert.executeBatch(); // Execute all inserts as a single batch
+
+            // Prepare the SQL for deleting from the cart table
+            String deleteQuery = "DELETE FROM cart WHERE id = ?";
+            pstmtDelete = conn.prepareStatement(deleteQuery);
+
+            for (Integer cartId : cartItemIds) {
+                pstmtDelete.setInt(1, cartId);
+                pstmtDelete.addBatch(); // Add to batch
+            }
+
+            pstmtDelete.executeBatch(); // Execute all deletes as a single batch
 
             conn.commit(); // Commit transaction
             return true;
@@ -114,14 +153,14 @@ public class CartDAO {
             if (conn != null) {
                 try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             }
+            return false;
         } finally {
             try { if (pstmtInsert != null) pstmtInsert.close(); } catch (SQLException e) { e.printStackTrace(); }
             try { if (pstmtDelete != null) pstmtDelete.close(); } catch (SQLException e) { e.printStackTrace(); }
             try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
         }
-
-        return false;
     }
+
 
     // ✅ Method to delete a single cart item
     public boolean deleteCartItem(int cartItemId) {
