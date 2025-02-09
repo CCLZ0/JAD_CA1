@@ -1,0 +1,27 @@
+.form-wrapper {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+.toggle-bar {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+.toggle-bar div {
+    cursor: pointer;
+    padding: 10px;
+    border-bottom: 2px solid transparent;
+}
+.toggle-bar .active {
+    border-bottom: 2px solid #007bff;
+}
+.form {
+    display: none;
+}
+.form.active {
+    display: block;
+}
