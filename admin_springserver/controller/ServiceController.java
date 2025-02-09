@@ -107,4 +107,16 @@ public class ServiceController {
 		}
 		return bookings;
 	}
+
+	@RequestMapping(method = RequestMethod.GET, path = "/getServicesByCategory/{categoryId}")
+    public List<Service> getServicesByCategory(@PathVariable("categoryId") int categoryId) {
+        List<Service> services = null;
+        try {
+            ServiceDAO db = new ServiceDAO();
+            services = db.getServicesByCategory(categoryId);
+        } catch (SQLException e) {
+            System.out.println("Error retrieving services by category: " + e);
+        }
+        return services;
+    }
 }

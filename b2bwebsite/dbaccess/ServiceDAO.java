@@ -1,4 +1,4 @@
-package com.shinepro.admin.dbaccess;
+package com.myshop.b2bwebsite.dbaccess;
 
 import java.sql.*;
 
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class ServiceDAO {
 
@@ -49,7 +50,7 @@ public class ServiceDAO {
         }
         return services;
     }
-
+    
     public List<Service> getServicesByCategory(int categoryId) throws SQLException {
         List<Service> services = new ArrayList<>();
         String query = "SELECT * FROM service WHERE category_id = ?";
